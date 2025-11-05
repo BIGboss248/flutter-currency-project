@@ -1,0 +1,19 @@
+# Sample megalinter config to install mega linter install npm
+# and docker then run npx mega-linter-runner --install
+
+# Configuration file for MegaLinter
+#
+# See all available variables at https://megalinter.io/latest/config-file/
+# Create files .devskim.json .checkov.yml kics.config
+APPLY_FIXES: all
+DISABLE_LINTERS:
+  - SPELL_CSPELL
+  - SPELL_LYCHEE
+  - COPYPASTE_JSCPD
+  - DART_DARTANALYZER
+  # - REPOSITORY_CHECKOV
+  # - REPOSITORY_KICS
+MARKDOWN_MARKDOWN_LINK_CHECK_DISABLE_ERRORS: true
+SHOW_ELAPSED_TIME: true
+FILEIO_REPORTER: false
+VALIDATE_ALL_CODEBASE: false # Only run on changed files

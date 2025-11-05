@@ -1,0 +1,54 @@
+# To install pre-commit run pip install pre-commit
+# Its a tool to check your code before commiting to repository https://pre-commit.com/#intro
+
+######################## Important ########################
+# If you just cloned the repository remember to use pre-commit install --hook-type pre-commit
+# To install pre-commit for other kind of hooks be sure to use --hook-type
+# To automate the process run below
+# git config --global init.templateDir ~/.git-template
+# pre-commit init-templatedir ~/.git-template
+# To check only files which have changed, which may be faster,
+# use something like pre-commit run --from-ref origin/HEAD --to-ref HEAD
+repos:
+  - repo: https://github.com/oxsecurity/megalinter
+    rev: v8.4.2 # Git tag specifying the hook, not mega-linter-runner, version
+    hooks:
+      - id: megalinter-full # Slower, more thorough
+        stages:
+          - pre-push # well defently now working
+      - id: megalinter-incremental
+        stages:
+          - pre-commit
+
+  # - repo: https://github.com/Checkmarx/kics
+  #   rev: v2.1.3-integrations
+  #   hooks:
+  #     - id: kics-scan
+
+  # - repo: https://github.com/bridgecrewio/checkov
+  #   rev: 3.2.269
+  #   hooks:
+  #     - id: checkov
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: check-yaml
+      - id: check-json
+      - id: end-of-file-fixer
+      - id: check-shebang-scripts-are-executable
+
+  # Python security
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.8.3
+    hooks:
+      - id: bandit
+
+  # Git security
+  - repo: https://github.com/gitguardian/gg-shield
+    rev: v1.37.0
+    hooks:
+      - id: ggshield
+      # - id: ggshield-iac
+      # - id: ggshield-sca

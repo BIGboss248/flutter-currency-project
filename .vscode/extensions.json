@@ -1,0 +1,32 @@
+// This section recommends exttentions
+// All of the listed all recommended for clean coding and linting code
+// and common tools to use
+{
+  "recommendations": [
+    "ms-python.autopep8",
+    "ms-vscode-remote.remote-containers",
+    "ms-cst-e.vscode-devskim",
+    "dbaeumer.vscode-eslint",
+    "tamasfe.even-better-toml",
+    "ms-python.flake8",
+    "golang.go",
+    "visualstudioexptteam.vscodeintellicode",
+    "remcohaszing.schemastore",
+    "redhat.java",
+    "davidanson.vscode-markdownlint",
+    "pkief.material-icon-theme",
+    "ahmadalli.vscode-nginx-conf",
+    "l-i-v.mql-tools",
+    "ms-vscode.powershell",
+    "esbenp.prettier-vscode",
+    "ms-python.python",
+    "mechatroner.rainbow-csv",
+    "cperezabo.routeros-syntax",
+    "sonarsource.sonarlint-vscode",
+    "tabnine.tabnine-vscode",
+    "redhat.vscode-yaml",
+    "ms-vscode-remote.remote-wsl",
+    "bierner.markdown-mermaid",
+    "aaron-bond.better-comments"
+  ]
+}

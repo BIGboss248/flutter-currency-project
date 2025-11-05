@@ -1,0 +1,43 @@
+// Here you can define tasks which are snippets for teminal
+// you can define compile and run tasks or any other repeatable
+// terminal task to be run with a click
+// use intellisense to figureout configurations
+{
+  "tasks": [
+    {
+      "label": "Create Project Layout",
+      "type": "shell",
+      "windows": {
+        "command": [
+          "\n",
+          "mkdir docs, scripts, cmd, internal, pkg, test\n",
+          "ni .env.example -ItemType File -Force\n",
+          "uvx --from git+https://github.com/github/spec-kit.git specify init --here --no-git\n"
+        ]
+      },
+      "linux": {
+        "command": [
+          "\n",
+          "mkdir -p {docs,scripts,cmd,internal,pkg,test} && touch .env.example Makefile\n",
+          "uvx --from git+https://github.com/github/spec-kit.git specify init --here --no-git\n"
+        ]
+      },
+      "osx": {
+        "command": [
+          "\n",
+          "mkdir -p {docs,scripts,cmd,internal,pkg,test} && touch .env.example Makefile\n",
+          "uvx --from git+https://github.com/github/spec-kit.git specify init --here --no-git\n"
+        ]
+      },
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "icon": {
+        "id": "root-folder-opened",
+        "color": "terminal.ansiGreen"
+      }
+    }
+  ]
+}

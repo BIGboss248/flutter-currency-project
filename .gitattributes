@@ -1,0 +1,9 @@
+# Here you can define git attributes the sample below
+# will prevent end of line errors when using linux and windows
+# both for example developing in a container
+
+
+
+* text=auto eol=lf
+*.{cmd,[cC][mM][dD]} text eol=crlf
+*.{bat,[bB][aA][tT]} text eol=crlf

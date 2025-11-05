@@ -1,0 +1,4 @@
+// This is where you configure mcp servers for vscode they connect AI tools to other tools allowing AI to interact with those tools and be more productive since it won't tell you what to do it will do it itself by communicating with the tools you configure
+
+//tip To use the mcp extentions added with vscode use # in chat this will bring a list of actions from the mcp servers you have configured and added either by extention or manually by specifing in this file
+

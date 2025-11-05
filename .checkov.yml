@@ -1,0 +1,16 @@
+# sample config for checov linter
+
+
+skip-check:
+  - CKV2_GHA_1 # Skip checks for github actions writeall permission
+# To skip a check comment below
+# checkov:skip=<check_id>:<suppression_comment>
+# example:
+#checkov:skip=CKV2_AWS_6
+compact: true
+download-external-modules: true
+evaluate-variables: true
+framework:
+  - all
+output: cli
+quiet: true

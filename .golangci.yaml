@@ -1,0 +1,6 @@
+# Sample configuration for golangci-lint for more see: https://golangci-lint.run/usage/false-positives/
+
+# linters:
+#   exclusions:
+#     rules:
+#       - path: "./graph/generated.go"

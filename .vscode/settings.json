@@ -1,15 +1,15 @@
 // This file will override vscode user settings any unspecified settings will folow user settings leave empty to use your own settings
 {
   "files.exclude": {
-  ".checkov.yml": true,
-  ".devskim.json": true,
-  ".gitattributes": true,
-  ".golangci.yaml": true,
-  ".grype.yaml": true,
-  ".mega-linter.yml": true,
-  ".pre-commit-config.yaml": true,
-  "kics.config": true,
-  "megalinter-reports": true,
-  }
-
+    ".checkov.yml": true,
+    ".devskim.json": true,
+    ".gitattributes": true,
+    ".golangci.yaml": true,
+    ".grype.yaml": true,
+    ".mega-linter.yml": true,
+    ".pre-commit-config.yaml": true,
+    "kics.config": true,
+    "megalinter-reports": true
+  },
+  "cmake.sourceDirectory": "D:/Scripts/flutter-currency-project/windows"
 }

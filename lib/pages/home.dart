@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/utils/currency.dart';
 import 'package:flutter_application_2/widgets/widgetLibrary.dart';
 import 'package:http/http.dart' as http;
 
@@ -10,11 +11,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  late Future<Currency> data;
+
   @override
   void initState() {
     super.initState();
-    fetchData();
-    }
+    data = fetchData("https://api.freecurrencyapi.com/v1/latest?apikey=");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,6 +88,19 @@ class _HomePageState extends State<HomePage> {
                 "Stay tuned for more features coming soon.",
                 style: TextStyle(color: Colors.white, fontSize: 18),
               ),
+            ),
+            FutureBuilder(
+              future: data,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Text(snapshot.data!.eur.toString());
+                } else if (snapshot.hasError) {
+                  return Text('${snapshot.error}');
+                }
+
+                // By default, show a loading spinner.
+                return const CircularProgressIndicator();
+              },
             ),
           ],
         ),

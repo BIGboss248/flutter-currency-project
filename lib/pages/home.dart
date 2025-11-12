@@ -1,7 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/utils/currency.dart';
 import 'package:flutter_application_2/widgets/widgetLibrary.dart';
-import 'package:http/http.dart' as http;
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -16,7 +17,9 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    data = fetchData("https://api.freecurrencyapi.com/v1/latest?apikey=");
+    data = fetchData(
+      "https://api.freecurrencyapi.com/v1/latest?apikey=fca_live_tKrVyW8ijlDcOONTG4MOjjPEYDp14VnG04sI4cYu",
+    );
   }
 
   @override
@@ -87,6 +90,58 @@ class _HomePageState extends State<HomePage> {
               child: const Text(
                 "Stay tuned for more features coming soon.",
                 style: TextStyle(color: Colors.white, fontSize: 18),
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                // color: Colors.white,
+                // borderRadius: BorderRadius.circular(10),
+                // boxShadow: [
+                //   BoxShadow(
+                //     color: Colors.black12,
+                //     blurRadius: 6,
+                //     offset: Offset(0, 3),
+                //   ),
+                // ],
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // European Union flag
+                  Image.asset("flags/eu.png", width: 100, height: 100),
+                  const SizedBox(height: 8),
+                  // Price of USD against EUR
+                  FutureBuilder<Currency>(
+                    future: data,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        final eurRate = snapshot.data!.eur;
+                        // eurRate is assumed to be the amount of EUR for 1 USD (USD -> EUR).
+                        // USD per 1 EUR = 1 / eurRate
+                        final usdPerEur = (eurRate != 0) ? (1 / eurRate) : 0;
+                        return Text(
+                          '1 EUR = ${usdPerEur.toStringAsFixed(4)} USD',
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        );
+                      } else if (snapshot.hasError) {
+                        return Text(
+                          'Error: ${snapshot.error}',
+                          style: const TextStyle(color: Colors.red),
+                        );
+                      }
+                      return const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 12),
+                        child: CircularProgressIndicator(),
+                      );
+                    },
+                  ),
+                ],
               ),
             ),
             FutureBuilder(

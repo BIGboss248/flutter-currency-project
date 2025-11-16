@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/utils/currency.dart';
-import 'package:flutter_application_2/widgets/widgetLibrary.dart';
+import 'package:flutter_application_2/widgets/widget_library.dart';
+import 'dart:developer' as developer;
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -32,7 +33,7 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () {
-          print("button pressed");
+          developer.log("button pressed", level: 200);
         },
       ),
       body: SingleChildScrollView(

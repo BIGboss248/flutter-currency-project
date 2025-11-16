@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/widgets/widgetLibrary.dart';
+import 'package:flutter_application_2/widgets/widget_library.dart';
 
 class Transactions extends StatefulWidget {
   const Transactions({super.key});

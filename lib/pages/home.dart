@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/utils/currency.dart';
+import 'package:flutter_application_2/widgets/value_notifiers.dart';
 import 'package:flutter_application_2/widgets/widget_library.dart';
 import 'dart:developer' as developer;
 
@@ -28,6 +29,26 @@ class _HomePageState extends State<HomePage> {
         title: Text("Home"),
         centerTitle: true,
         automaticallyImplyLeading: true,
+        actions: [
+          IconButton(
+            icon: ValueListenableBuilder(
+              valueListenable: themeNotifier,
+              builder: (context, themeNotifier, child) {
+                return Icon(
+                  themeNotifier == ThemeMode.dark
+                      ? Icons.light_mode
+                      : Icons.dark_mode,
+                );
+              },
+            ),
+            onPressed: () {
+              developer.log("theme mode is ${themeNotifier.value}");
+              themeNotifier.value = themeNotifier.value == ThemeMode.dark
+                  ? ThemeMode.light
+                  : ThemeMode.dark;
+            },
+          ),
+        ],
       ),
       bottomNavigationBar: MainNavBar(currentIndex: 0),
       floatingActionButton: FloatingActionButton(

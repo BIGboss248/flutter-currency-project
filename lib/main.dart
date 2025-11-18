@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/pages/transactions.dart';
 import 'package:flutter_application_2/pages/home.dart';
+import 'package:flutter_application_2/widgets/value_notifiers.dart';
 import 'package:go_router/go_router.dart';
 
 // GoRouter configuration
@@ -20,24 +21,29 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: "Budgee",
-      debugShowCheckedModeBanner: false,
-      routerConfig: _router,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: brightThemeSeedColor,
-          brightness: Brightness.light,
-        ),
-      ),
-      darkTheme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: darkThemeSeedColor,
-          brightness: Brightness.dark,
-        ),
-      ),
-      themeMode: ThemeMode.system,
-      locale: const Locale("en", "US"),
+    return ValueListenableBuilder(
+      valueListenable: themeNotifier,
+      builder: (context, themeMode, child) {
+        return MaterialApp.router(
+          title: "Budgee",
+          debugShowCheckedModeBanner: false,
+          routerConfig: _router,
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: brightThemeSeedColor,
+              brightness: Brightness.light,
+            ),
+          ),
+          darkTheme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: darkThemeSeedColor,
+              brightness: Brightness.dark,
+            ),
+          ),
+          themeMode: themeMode,
+          locale: const Locale("en", "US"),
+        );
+      },
     );
   }
 }

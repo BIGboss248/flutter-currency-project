@@ -56,3 +56,32 @@ Future<void> saveTheme(ThemeMode mode) async {
   await prefs.setString(_themeKey, mode.name); // "light", "dark", "system"
   developer.log("Saved theme mode as ${mode.name}", level: 100);
 }
+
+class ThemeChangeIcon extends StatelessWidget {
+  const ThemeChangeIcon({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed: () {
+        if (themeNotifier.value == ThemeMode.dark) {
+          saveTheme(ThemeMode.light);
+          themeNotifier.value = ThemeMode.light;
+        } else {
+          saveTheme(ThemeMode.dark);
+          themeNotifier.value = ThemeMode.dark;
+        }
+      },
+      icon: ValueListenableBuilder(
+        valueListenable: themeNotifier,
+        builder: (context, themeMode, child) {
+          if (themeMode == ThemeMode.dark) {
+            saveTheme(ThemeMode.light);
+            return Icon(Icons.light_mode);
+          }
+          return Icon(Icons.dark_mode);
+        },
+      ),
+    );
+  }
+}

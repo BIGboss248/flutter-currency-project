@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/utils/currency.dart';
-import 'package:flutter_application_2/widgets/value_notifiers.dart';
+import 'package:flutter_application_2/widgets/theme_change.dart';
 import 'package:flutter_application_2/widgets/widget_library.dart';
 import 'dart:developer' as developer;
 
@@ -29,34 +29,7 @@ class _HomePageState extends State<HomePage> {
         title: Text("Home"),
         centerTitle: true,
         automaticallyImplyLeading: true,
-        actions: [
-          IconButton(
-            icon: ValueListenableBuilder(
-              valueListenable: themeNotifier,
-              builder: (context, themeNotifier, child) {
-                return Icon(
-                  themeNotifier == ThemeMode.dark
-                      ? Icons.light_mode
-                      : Icons.dark_mode,
-                );
-              },
-            ),
-            onPressed: () {
-              developer.log(
-                "theme mode was ${themeNotifier.value}",
-                level: 200,
-              );
-              if (themeNotifier.value == ThemeMode.dark) {
-                themeNotifier.value = ThemeMode.light;
-                saveTheme(ThemeMode.light);
-              } else if (themeNotifier.value == ThemeMode.light) {
-                themeNotifier.value = ThemeMode.dark;
-                saveTheme(ThemeMode.dark);
-              }
-              developer.log("theme mode is ${themeNotifier.value}", level: 200);
-            },
-          ),
-        ],
+        actions: [ThemeChangeIcon()],
       ),
       bottomNavigationBar: MainNavBar(currentIndex: 0),
       floatingActionButton: FloatingActionButton(

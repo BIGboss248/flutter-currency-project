@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/widgets/theme_change.dart';
 import 'package:flutter_application_2/widgets/widget_library.dart';
 
 class Transactions extends StatefulWidget {
@@ -13,9 +14,15 @@ class _TransactionsState extends State<Transactions> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        actions: [
+          // ThemeChangeIcon allows the user to toggle between light and dark themes.
+          ThemeChangeIcon(),
+        ],
+      ),
       bottomNavigationBar: MainNavBar(currentIndex: 1),
       body: Column(),
     );
   }
 }
+

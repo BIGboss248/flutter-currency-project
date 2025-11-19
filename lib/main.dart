@@ -12,7 +12,11 @@ final _router = GoRouter(
   ],
 );
 
-void main() => runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await loadSavedTheme(); // Load persisted theme FIRST
+  runApp(const MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -29,12 +33,14 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           routerConfig: _router,
           theme: ThemeData(
+            useMaterial3: true,
             colorScheme: ColorScheme.fromSeed(
               seedColor: brightThemeSeedColor,
               brightness: Brightness.light,
             ),
           ),
           darkTheme: ThemeData(
+            useMaterial3: true,
             colorScheme: ColorScheme.fromSeed(
               seedColor: darkThemeSeedColor,
               brightness: Brightness.dark,

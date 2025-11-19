@@ -42,10 +42,18 @@ class _HomePageState extends State<HomePage> {
               },
             ),
             onPressed: () {
-              developer.log("theme mode is ${themeNotifier.value}");
-              themeNotifier.value = themeNotifier.value == ThemeMode.dark
-                  ? ThemeMode.light
-                  : ThemeMode.dark;
+              developer.log(
+                "theme mode was ${themeNotifier.value}",
+                level: 200,
+              );
+              if (themeNotifier.value == ThemeMode.dark) {
+                themeNotifier.value = ThemeMode.light;
+                saveTheme(ThemeMode.light);
+              } else if (themeNotifier.value == ThemeMode.light) {
+                themeNotifier.value = ThemeMode.dark;
+                saveTheme(ThemeMode.dark);
+              }
+              developer.log("theme mode is ${themeNotifier.value}", level: 200);
             },
           ),
         ],

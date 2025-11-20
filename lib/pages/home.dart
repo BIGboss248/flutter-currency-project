@@ -5,7 +5,9 @@ import 'package:flutter_application_2/widgets/main_bot_navbar.dart';
 import 'dart:developer' as developer;
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({required this.pageIndex, super.key});
+
+  final int pageIndex;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -31,7 +33,7 @@ class _HomePageState extends State<HomePage> {
         automaticallyImplyLeading: true,
         actions: [ThemeChangeIcon()],
       ),
-      bottomNavigationBar: MainNavBar(currentIndex: 0),
+      bottomNavigationBar: MainNavBar(currentIndex: widget.pageIndex),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () {

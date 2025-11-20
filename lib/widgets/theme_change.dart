@@ -76,7 +76,6 @@ class ThemeChangeIcon extends StatelessWidget {
         valueListenable: themeNotifier,
         builder: (context, themeMode, child) {
           if (themeMode == ThemeMode.dark) {
-            saveTheme(ThemeMode.light);
             return Icon(Icons.light_mode);
           }
           return Icon(Icons.dark_mode);

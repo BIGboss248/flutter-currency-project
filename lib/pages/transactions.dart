@@ -10,19 +10,44 @@ class Transactions extends StatefulWidget {
 }
 
 class _TransactionsState extends State<Transactions> {
-  int currentPage = 0;
+  final List<Widget> items = []; // MUST NOT be const
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actions: [
-          // ThemeChangeIcon allows the user to toggle between light and dark themes.
-          ThemeChangeIcon(),
-        ],
+        actions: [ThemeChangeIcon()],
       ),
       bottomNavigationBar: MainNavBar(currentIndex: 1),
-      body: Column(),
+
+      body: ListView.builder(
+        padding: const EdgeInsets.all(16),
+        itemCount: items.length,
+        itemBuilder: (context, index) => items[index],
+        
+      ),
+
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () {
+          setState(() {
+            items.add(
+              Container(
+                margin: const EdgeInsets.only(bottom: 16),
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.blueAccent,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Text(
+                  "New transaction added",
+                  style: TextStyle(color: Colors.white, fontSize: 18),
+                ),
+              ),
+            );
+          });
+        },
+      ),
     );
   }
 }
-

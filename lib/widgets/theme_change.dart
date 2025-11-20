@@ -74,11 +74,20 @@ class ThemeChangeIcon extends StatelessWidget {
       },
       icon: ValueListenableBuilder(
         valueListenable: themeNotifier,
-        builder: (context, themeMode, child) {
-          if (themeMode == ThemeMode.dark) {
-            return Icon(Icons.light_mode);
-          }
-          return Icon(Icons.dark_mode);
+        builder: (context, themeMode, _) {
+          return AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            transitionBuilder: (child, animation) {
+              return RotationTransition(
+                turns: animation,
+                child: FadeTransition(opacity: animation, child: child),
+              );
+            },
+            child: Icon(
+              themeMode == ThemeMode.dark ? Icons.light_mode : Icons.dark_mode,
+              key: ValueKey(themeMode), // IMPORTANT
+            ),
+          );
         },
       ),
     );

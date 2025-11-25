@@ -3,7 +3,9 @@ import 'package:flutter_application_2/widgets/theme_change.dart';
 import 'package:flutter_application_2/widgets/main_bot_navbar.dart';
 
 class Transactions extends StatefulWidget {
-  const Transactions({super.key});
+  const Transactions({required this.pageIndex, super.key});
+
+  final int pageIndex;
 
   @override
   State<Transactions> createState() => _TransactionsState();
@@ -18,7 +20,7 @@ class _TransactionsState extends State<Transactions> {
       appBar: AppBar(
         actions: [ThemeChangeIcon()],
       ),
-      bottomNavigationBar: MainNavBar(currentIndex: 1),
+      bottomNavigationBar: MainNavBar(currentIndex: widget.pageIndex),
 
       body: ListView.builder(
         padding: const EdgeInsets.all(16),

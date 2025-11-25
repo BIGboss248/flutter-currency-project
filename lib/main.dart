@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/pages/login_page.dart';
 import 'package:flutter_application_2/pages/transactions.dart';
 import 'package:flutter_application_2/pages/home.dart';
 import 'package:flutter_application_2/widgets/theme_change.dart';
@@ -9,6 +10,7 @@ final _router = GoRouter(
   routes: [
     GoRoute(path: '/', builder: (context, state) => HomePage(pageIndex: 0,)),
     GoRoute(path: '/transactions', builder: (context, state) => Transactions(pageIndex: 1)),
+    GoRoute(path: '/login', builder: (context, state) => LoginPage(pageIndex: 2)),
   ],
 );
 

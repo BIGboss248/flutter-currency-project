@@ -15,6 +15,8 @@ class MainNavBar extends StatelessWidget {
           context.go('/'); // replace current page with home
         } else if (index == 1) {
           context.push('/transactions'); // go to transactions page
+        } else if (index == 2) {
+          context.push('/login'); // go to login page
         }
       },
       items: const [
@@ -23,6 +25,7 @@ class MainNavBar extends StatelessWidget {
           icon: Icon(Icons.account_balance_wallet),
           label: "Transactions",
         ),
+        BottomNavigationBarItem(icon: Icon(Icons.login), label: "Login"),
       ],
       selectedItemColor: Colors.blue,
       unselectedItemColor: Colors.grey,

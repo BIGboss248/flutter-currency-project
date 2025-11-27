@@ -1,9 +1,12 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/pages/login_page.dart';
 import 'package:flutter_application_2/pages/transactions.dart';
 import 'package:flutter_application_2/pages/home.dart';
 import 'package:flutter_application_2/widgets/theme_change.dart';
 import 'package:go_router/go_router.dart';
+import 'firebase_options.dart';
+import 'dart:developer' as developer;
 
 // GoRouter configuration
 final _router = GoRouter(
@@ -15,7 +18,10 @@ final _router = GoRouter(
 );
 
 void main() async {
+  developer.log("Initializing widgets...", level: 100);
   WidgetsFlutterBinding.ensureInitialized();
+  developer.log("Initializing firebase...", level: 100);
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await loadSavedTheme(); // Load persisted theme FIRST
   runApp(const MyApp());
 }

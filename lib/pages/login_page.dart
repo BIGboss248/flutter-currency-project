@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/widgets/main_bot_navbar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:developer' as developer;
 
 class LoginPage extends StatefulWidget {
   const LoginPage({required this.pageIndex, super.key});
@@ -17,11 +19,23 @@ class _LoginPageState extends State<LoginPage> {
 
   late final TextEditingController _passwordController;
 
+  final emailFocusNode = FocusNode();
+  final passwordFocusNode = FocusNode();
+  final registerFocusNode = FocusNode();
+
   @override
   void initState() {
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    emailFocusNode.dispose();
+    passwordFocusNode.dispose();
+    registerFocusNode.dispose();
+    super.dispose();
   }
 
   @override
@@ -39,6 +53,7 @@ class _LoginPageState extends State<LoginPage> {
           spacing: 20.0,
           children: [
             TextField(
+              focusNode: emailFocusNode,
               controller:
                   _emailController, // Controller to get the text from the text //* this must be declared outside build method
               enableSuggestions:
@@ -55,12 +70,12 @@ class _LoginPageState extends State<LoginPage> {
                     "Enter your mail", // Hint text when the field is empty
                 border: OutlineInputBorder(), // Border around the text field
               ),
-              onEditingComplete: () {
-                //When the user presses enter (or done)
-                setState(() {});
+              onSubmitted: (_) {
+                FocusScope.of(context).requestFocus(passwordFocusNode);
               },
             ),
             TextField(
+              focusNode: passwordFocusNode,
               controller: _passwordController,
               enableSuggestions: false,
               autocorrect: false,
@@ -70,6 +85,55 @@ class _LoginPageState extends State<LoginPage> {
                 labelText: "Password",
                 hintText: "Enter your password",
                 border: OutlineInputBorder(),
+              ),
+            ),
+            Center(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    focusNode: registerFocusNode,
+                    onPressed: () async {
+                      try {
+                        final userCredential = await FirebaseAuth.instance
+                            .createUserWithEmailAndPassword(
+                              email: _emailController
+                                  .text, // You can get this data from user using text fields
+                              password: _passwordController
+                                  .text, // You can get this data from user using text fields
+                            );
+                        developer.log(
+                          "User registered: ${userCredential.user?.email}",
+                          level: 200,
+                        );
+                      } catch (e) {
+                        developer.log(
+                          "Error registering user: $e",
+                          level: 1000,
+                        );
+                      }
+                    },
+                    child: Text("Register"),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      try {
+                        FirebaseAuth.instance.signInWithEmailAndPassword(
+                          email: _emailController.text,
+                          password: _passwordController.text,
+                        );
+                        developer.log(
+                          "User logged in: ${_emailController.text}",
+                          level: 200,
+                        );
+                      } catch (e) {
+                        developer.log("Error logging in user: $e", level: 1000);
+                      }
+                    },
+                    child: Text("Login"),
+                  ),
+                ],
               ),
             ),
           ],

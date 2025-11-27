@@ -11,12 +11,22 @@ class MainNavBar extends StatelessWidget {
     return BottomNavigationBar(
       currentIndex: currentIndex,
       onTap: (int index) {
-        if (index == 0) {
-          context.go('/'); // replace current page with home
-        } else if (index == 1) {
-          context.push('/transactions'); // go to transactions page
-        } else if (index == 2) {
-          context.push('/login'); // go to login page
+        switch (index) {
+          case 0:
+            {
+              context.go("/");
+              break;
+            }
+          case 1:
+            {
+              context.push("/transactions");
+              break;
+            }
+          case 2:
+            {
+              context.push("/login");
+              break;
+            }
         }
       },
       items: const [

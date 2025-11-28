@@ -95,6 +95,17 @@ class _LoginPageState extends State<LoginPage> {
                   ElevatedButton(
                     focusNode: registerFocusNode,
                     onPressed: () async {
+                      if (_emailController.text.isEmpty ||
+                          _passwordController.text.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              "Email and Password cannot be empty.",
+                            ),
+                          ),
+                        );
+                        return;
+                      }
                       try {
                         final userCredential = await FirebaseAuth.instance
                             .createUserWithEmailAndPassword(
@@ -118,11 +129,23 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      try {
-                        FirebaseAuth.instance.signInWithEmailAndPassword(
-                          email: _emailController.text,
-                          password: _passwordController.text,
+                      if (_emailController.text.isEmpty ||
+                          _passwordController.text.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              "Email and Password cannot be empty.",
+                            ),
+                          ),
                         );
+                        return;
+                      }
+                      try {
+                        signInFuture = FirebaseAuth.instance
+                            .signInWithEmailAndPassword(
+                              email: _emailController.text,
+                              password: _passwordController.text,
+                            );
                         developer.log(
                           "User logged in: ${_emailController.text}",
                           level: 200,

@@ -158,8 +158,12 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   ElevatedButton(
                     onPressed: () async {
-                      await showLogoutDialog(context);
-                      // signOutFuture = FirebaseAuth.instance.signOut();
+                      final shouldLogOut = await showLogoutDialog(context);
+                      if (shouldLogOut != true) {
+                        developer.log("Logout cancelled by user", level: 200);
+                        return;
+                      }
+                      signOutFuture = FirebaseAuth.instance.signOut();
                       developer.log("User logged out", level: 200);
                     },
                     child: Text("Log out"),

@@ -13,11 +13,11 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  //tip This is where to declare your variables and controllers and get data from internet. if needed use !initstate snippet to create init state
-
   late final TextEditingController _emailController;
-
   late final TextEditingController _passwordController;
+
+  Future<UserCredential>? signInFuture; // Initialize signInFuture to null
+  Future<dynamic>? signOutFuture;
 
   final emailFocusNode = FocusNode();
   final passwordFocusNode = FocusNode();
@@ -156,12 +156,87 @@ class _LoginPageState extends State<LoginPage> {
                     },
                     child: Text("Login"),
                   ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      await showLogoutDialog(context);
+                      // signOutFuture = FirebaseAuth.instance.signOut();
+                      developer.log("User logged out", level: 200);
+                    },
+                    child: Text("Log out"),
+                  ),
                 ],
               ),
+            ),
+            FutureBuilder(
+              future: signInFuture,
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (signInFuture == null) {
+                  return const SizedBox.shrink(); // Placeholder when no future is set
+                }
+                switch (snapshot.connectionState) {
+                  case ConnectionState.none:
+                  case ConnectionState.waiting:
+                    return const CircularProgressIndicator();
+                  case ConnectionState.active:
+                  case ConnectionState.done:
+                    if (snapshot.hasError) {
+                      return Container(
+                        color: Theme.of(context).primaryColor,
+                        child: Text(
+                          "Error occured during login",
+                          style: const TextStyle(color: Colors.red),
+                        ),
+                      );
+                    } else {
+                      return Container(
+                        color: Theme.of(context).primaryColor,
+                        child: const Text(
+                          "Login Successful!",
+                          style: TextStyle(color: Colors.green),
+                        ),
+                      );
+                    }
+                }
+              },
+            ),
+            FutureBuilder(
+              future: signOutFuture,
+              builder: (context, snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.waiting:
+                    return CircularProgressIndicator();
+                  case ConnectionState.done:
+                    return Text("Logged out successfully");
+                  default:
+                    return SizedBox.shrink();
+                }
+              },
             ),
           ],
         ),
       ),
     );
   }
+}
+
+Future<bool> showLogoutDialog(BuildContext context) async {
+  final result = await showDialog<bool>(
+    context: context,
+    barrierDismissible: true,
+    builder: (context) => AlertDialog(
+      title: const Text('Confirm Logout'),
+      content: const Text('Are you sure you want to log out?'),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(false),
+          child: const Text('Cancel'),
+        ),
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(true),
+          child: const Text('Log out'),
+        ),
+      ],
+    ),
+  );
+  return result ?? false;
 }

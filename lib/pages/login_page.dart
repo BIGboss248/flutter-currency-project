@@ -223,21 +223,31 @@ class _LoginPageState extends State<LoginPage> {
   }
 }
 
+// Show an alert dialog with a choice can be configured to return any future type
 Future<bool> showLogoutDialog(BuildContext context) async {
   final result = await showDialog<bool>(
     context: context,
     barrierDismissible: true,
     builder: (context) => AlertDialog(
-      title: const Text('Confirm Logout'),
-      content: const Text('Are you sure you want to log out?'),
+      title: const Text('Confirm Logout', textAlign: TextAlign.center),
+      content: const Text(
+        'Are you sure you want to log out?',
+        textAlign: TextAlign.center,
+      ),
       actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(false),
-          child: const Text('Cancel'),
-        ),
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(true),
-          child: const Text('Log out'),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Log out'),
+            ),
+          ],
         ),
       ],
     ),

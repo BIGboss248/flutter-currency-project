@@ -147,7 +147,7 @@ class _LoginPageState extends State<LoginPage> {
                               password: _passwordController.text,
                             );
                         developer.log(
-                          "User logged in: ${_emailController.text}",
+                          "User logged in: ${FirebaseAuth.instance.currentUser?.email}",
                           level: 200,
                         );
                       } catch (e) {

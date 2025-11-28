@@ -158,13 +158,28 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   ElevatedButton(
                     onPressed: () async {
-                      final shouldLogOut = await showLogoutDialog(context);
-                      if (shouldLogOut != true) {
-                        developer.log("Logout cancelled by user", level: 200);
-                        return;
+                      if (FirebaseAuth.instance.currentUser != null) {
+                        final shouldLogOut = await showLogoutDialog(context);
+                        if (shouldLogOut != true) {
+                          developer.log("Logout cancelled by user", level: 200);
+                          return;
+                        }
+                        signOutFuture = FirebaseAuth.instance.signOut();
+                        developer.log("User logged out", level: 200);
+                      } else {
+                        developer.log(
+                          "No user is currently logged in",
+                          level: 800,
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              "You are not logged in",
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        );
                       }
-                      signOutFuture = FirebaseAuth.instance.signOut();
-                      developer.log("User logged out", level: 200);
                     },
                     child: Text("Log out"),
                   ),
@@ -239,11 +254,11 @@ Future<bool> showLogoutDialog(BuildContext context) async {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            TextButton(
+            ElevatedButton(
               onPressed: () => Navigator.of(context).pop(false),
               child: const Text('Cancel'),
             ),
-            TextButton(
+            ElevatedButton(
               onPressed: () => Navigator.of(context).pop(true),
               child: const Text('Log out'),
             ),

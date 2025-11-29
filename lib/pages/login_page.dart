@@ -128,7 +128,7 @@ class _LoginPageState extends State<LoginPage> {
                     child: Text("Register"),
                   ),
                   ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       if (_emailController.text.isEmpty ||
                           _passwordController.text.isEmpty) {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -146,6 +146,9 @@ class _LoginPageState extends State<LoginPage> {
                               email: _emailController.text,
                               password: _passwordController.text,
                             );
+                        // The idea for below is to await data to be fetched before logging using developer.log so the data is not shown as null because of async nature
+                        // ignore: unused_local_variable
+                        final userCredential = await signInFuture;
                         developer.log(
                           "User logged in: ${FirebaseAuth.instance.currentUser?.email}",
                           level: 200,
@@ -200,7 +203,7 @@ class _LoginPageState extends State<LoginPage> {
                   case ConnectionState.done:
                     if (snapshot.hasError) {
                       return Container(
-                        color: Theme.of(context).primaryColor,
+                        color: Colors.amber,
                         child: Text(
                           "Error occured during login",
                           style: const TextStyle(color: Colors.red),

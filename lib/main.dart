@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/constants/routes.dart';
+import 'package:flutter_application_2/constants/theme.dart';
 import 'package:flutter_application_2/pages/login_page.dart';
 import 'package:flutter_application_2/pages/transactions.dart';
 import 'package:flutter_application_2/pages/home.dart';
@@ -12,9 +13,18 @@ import 'dart:developer' as developer;
 // GoRouter configuration
 final _router = GoRouter(
   routes: [
-    GoRoute(path: mainPageRoute, builder: (context, state) => HomePage(pageIndex: 0,)),
-    GoRoute(path: transactionsPageRoute, builder: (context, state) => Transactions(pageIndex: 1)),
-    GoRoute(path: loginPageRoute, builder: (context, state) => LoginPage(pageIndex: 2)),
+    GoRoute(
+      path: mainPageRoute,
+      builder: (context, state) => HomePage(pageIndex: 0),
+    ),
+    GoRoute(
+      path: transactionsPageRoute,
+      builder: (context, state) => Transactions(pageIndex: 1),
+    ),
+    GoRoute(
+      path: loginPageRoute,
+      builder: (context, state) => LoginPage(pageIndex: 2),
+    ),
   ],
 );
 
@@ -29,8 +39,6 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-  final brightThemeSeedColor = Colors.blue;
-  final darkThemeSeedColor = Colors.blue;
 
   @override
   Widget build(BuildContext context) {
@@ -41,20 +49,8 @@ class MyApp extends StatelessWidget {
           title: "Budgee",
           debugShowCheckedModeBanner: false,
           routerConfig: _router,
-          theme: ThemeData(
-            useMaterial3: true,
-            colorScheme: ColorScheme.fromSeed(
-              seedColor: brightThemeSeedColor,
-              brightness: Brightness.light,
-            ),
-          ),
-          darkTheme: ThemeData(
-            useMaterial3: true,
-            colorScheme: ColorScheme.fromSeed(
-              seedColor: darkThemeSeedColor,
-              brightness: Brightness.dark,
-            ),
-          ),
+          theme: lightTheme(),
+          darkTheme: darkTheme(),
           themeMode: themeMode,
           locale: const Locale("en", "US"),
         );

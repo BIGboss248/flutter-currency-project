@@ -204,6 +204,7 @@ class _LoginPageState extends State<LoginPage> {
                     if (snapshot.hasError) {
                       return Container(
                         color: Colors.amber,
+                        padding: EdgeInsets.all(10.0),
                         child: Text(
                           "Error occured during login",
                           style: const TextStyle(color: Colors.red),
@@ -211,7 +212,7 @@ class _LoginPageState extends State<LoginPage> {
                       );
                     } else {
                       return Container(
-                        color: Theme.of(context).primaryColor,
+                        color: Colors.amber,
                         child: const Text(
                           "Login Successful!",
                           style: TextStyle(color: Colors.green),
@@ -228,7 +229,14 @@ class _LoginPageState extends State<LoginPage> {
                   case ConnectionState.waiting:
                     return CircularProgressIndicator();
                   case ConnectionState.done:
-                    return Text("Logged out successfully");
+                    return Container(
+                      color: Colors.amber,
+                      padding: EdgeInsets.all(10.0),
+                      child: Text(
+                        "Logged out successfully",
+                        style: TextStyle(color: Colors.green),
+                      ),
+                    );
                   default:
                     return SizedBox.shrink();
                 }

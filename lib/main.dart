@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/constants/routes.dart';
 import 'package:flutter_application_2/pages/login_page.dart';
 import 'package:flutter_application_2/pages/transactions.dart';
 import 'package:flutter_application_2/pages/home.dart';
@@ -11,9 +12,9 @@ import 'dart:developer' as developer;
 // GoRouter configuration
 final _router = GoRouter(
   routes: [
-    GoRoute(path: '/', builder: (context, state) => HomePage(pageIndex: 0,)),
-    GoRoute(path: '/transactions', builder: (context, state) => Transactions(pageIndex: 1)),
-    GoRoute(path: '/login', builder: (context, state) => LoginPage(pageIndex: 2)),
+    GoRoute(path: mainPageRoute, builder: (context, state) => HomePage(pageIndex: 0,)),
+    GoRoute(path: transactionsPageRoute, builder: (context, state) => Transactions(pageIndex: 1)),
+    GoRoute(path: loginPageRoute, builder: (context, state) => LoginPage(pageIndex: 2)),
   ],
 );
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/constants/routes.dart';
 import 'package:go_router/go_router.dart';
 
 class MainNavBar extends StatelessWidget {
@@ -14,17 +15,17 @@ class MainNavBar extends StatelessWidget {
         switch (index) {
           case 0:
             {
-              context.go("/");
+              context.go(mainPageRoute);
               break;
             }
           case 1:
             {
-              context.push("/transactions");
+              context.push(transactionsPageRoute);
               break;
             }
           case 2:
             {
-              context.push("/login");
+              context.push(loginPageRoute);
               break;
             }
         }

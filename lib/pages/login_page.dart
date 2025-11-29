@@ -128,7 +128,7 @@ class _LoginPageState extends State<LoginPage> {
                     child: Text("Register"),
                   ),
                   ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       if (_emailController.text.isEmpty ||
                           _passwordController.text.isEmpty) {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -146,6 +146,9 @@ class _LoginPageState extends State<LoginPage> {
                               email: _emailController.text,
                               password: _passwordController.text,
                             );
+                        // The idea for below is to await data to be fetched before logging using developer.log so the data is not shown as null because of async nature
+                        // ignore: unused_local_variable
+                        final userCredential = await signInFuture;
                         developer.log(
                           "User logged in: ${FirebaseAuth.instance.currentUser?.email}",
                           level: 200,
@@ -200,7 +203,8 @@ class _LoginPageState extends State<LoginPage> {
                   case ConnectionState.done:
                     if (snapshot.hasError) {
                       return Container(
-                        color: Theme.of(context).primaryColor,
+                        color: Colors.amber,
+                        padding: EdgeInsets.all(10.0),
                         child: Text(
                           "Error occured during login",
                           style: const TextStyle(color: Colors.red),
@@ -208,7 +212,7 @@ class _LoginPageState extends State<LoginPage> {
                       );
                     } else {
                       return Container(
-                        color: Theme.of(context).primaryColor,
+                        color: Colors.amber,
                         child: const Text(
                           "Login Successful!",
                           style: TextStyle(color: Colors.green),
@@ -225,7 +229,14 @@ class _LoginPageState extends State<LoginPage> {
                   case ConnectionState.waiting:
                     return CircularProgressIndicator();
                   case ConnectionState.done:
-                    return Text("Logged out successfully");
+                    return Container(
+                      color: Colors.amber,
+                      padding: EdgeInsets.all(10.0),
+                      child: Text(
+                        "Logged out successfully",
+                        style: TextStyle(color: Colors.green),
+                      ),
+                    );
                   default:
                     return SizedBox.shrink();
                 }

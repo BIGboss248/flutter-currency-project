@@ -22,6 +22,7 @@ ThemeData lightTheme() {
         alignment: AlignmentGeometry.center,
       ),
     ),
+    cardTheme: CardThemeData(color: brightThemeSeedColor),
   );
 }
 
@@ -34,7 +35,7 @@ ThemeData darkTheme() {
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
-        backgroundColor: WidgetStateProperty.all<Color>(brightThemeSeedColor),
+        backgroundColor: WidgetStateProperty.all<Color>(darkThemeSeedColor),
         alignment: AlignmentGeometry.center,
       ),
     ),
@@ -44,5 +45,6 @@ ThemeData darkTheme() {
         alignment: AlignmentGeometry.center,
       ),
     ),
+    cardTheme: CardThemeData(color: darkThemeSeedColor),
   );
 }

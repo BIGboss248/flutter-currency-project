@@ -118,11 +118,52 @@ class _LoginPageState extends State<LoginPage> {
                           "User registered: ${userCredential.user?.email}",
                           level: 200,
                         );
+                      } on FirebaseAuthException catch (e) {
+                        // if (!mounted) return; //* GPT said i should add this to get rid of context warning IDK what it dose so i comment it out
+                        switch (e.code) {
+                          case "email-already-in-use":
+                            developer.log(
+                              "Email already in use ${_emailController.text}",
+                              level: 600,
+                            );
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Email already in use"),
+                              ),
+                            );
+                          case "weak-password":
+                            developer.log(
+                              "Password is too weak for user ${_emailController.text}",
+                              level: 600,
+                            );
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Password is too weak"),
+                              ),
+                            );
+                          case "invalid-email":
+                            developer.log(
+                              "Firebase Email is not valid",
+                              level: 600,
+                            );
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Email is not valid"),
+                              ),
+                            );
+                          default:
+                            developer.log(
+                              "Error registering in user: $e",
+                              level: 600,
+                            );
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Unknown register error occured"),
+                              ),
+                            );
+                        }
                       } catch (e) {
-                        developer.log(
-                          "Error registering user: $e",
-                          level: 1000,
-                        );
+                        developer.log("Error registering user: $e", level: 600);
                       }
                     },
                     child: Text("Register"),
@@ -153,8 +194,52 @@ class _LoginPageState extends State<LoginPage> {
                           "User logged in: ${FirebaseAuth.instance.currentUser?.email}",
                           level: 200,
                         );
+                      } on FirebaseAuthException catch (e) {
+                        // if (!mounted) return; //* GPT said i should add this to get rid of context warning IDK what it dose so i comment it out
+                        switch (e.code) {
+                          case "wrong-password":
+                            developer.log(
+                              "Wrong password entered for user ${_emailController.text}",
+                              level: 600,
+                            );
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Wrong username or password"),
+                              ),
+                            );
+                          case "user-not-found":
+                            developer.log(
+                              "Firebase User not found",
+                              level: 600,
+                            );
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Email is not registered"),
+                              ),
+                            );
+                          case "invalid-email":
+                            developer.log(
+                              "Firebase Email is not valid",
+                              level: 600,
+                            );
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Email is not valid"),
+                              ),
+                            );
+                          default:
+                            developer.log(
+                              "Error logging in user: $e",
+                              level: 600,
+                            );
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Unknown login error occured"),
+                              ),
+                            );
+                        }
                       } catch (e) {
-                        developer.log("Error logging in user: $e", level: 1000);
+                        developer.log("Error logging in user: $e", level: 600);
                       }
                     },
                     child: Text("Login"),

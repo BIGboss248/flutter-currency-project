@@ -50,6 +50,10 @@ class _LoginPageState extends State<LoginPage> {
       body: Container(
         margin: const EdgeInsets.all(20),
         child: Column(
+          mainAxisAlignment:
+              MainAxisAlignment.center, // Center content vertically
+          crossAxisAlignment:
+              CrossAxisAlignment.center, // Center content horizontally
           spacing: 20.0,
           children: [
             TextField(

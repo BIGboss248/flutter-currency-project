@@ -50,8 +50,9 @@ class _LoginPageState extends State<LoginPage> {
         automaticallyImplyLeading: true, // The back button to previous page
       ),
       bottomNavigationBar: MainNavBar(currentIndex: widget.pageIndex),
-      body: Container(
-        margin: const EdgeInsets.all(20),
+      resizeToAvoidBottomInset: true,
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(20.0),
         child: Column(
           mainAxisAlignment:
               MainAxisAlignment.center, // Center content vertically
@@ -59,6 +60,7 @@ class _LoginPageState extends State<LoginPage> {
               CrossAxisAlignment.center, // Center content horizontally
           spacing: 20.0,
           children: [
+            SizedBox(height: MediaQuery.of(context).size.height * 0.1),
             TextField(
               focusNode: emailFocusNode,
               controller:

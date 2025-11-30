@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/constants/routes.dart';
 import 'package:flutter_application_2/widgets/main_bot_navbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:developer' as developer;
+
+import 'package:go_router/go_router.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({required this.pageIndex, super.key});
@@ -96,82 +99,6 @@ class _LoginPageState extends State<LoginPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  ElevatedButton(
-                    focusNode: registerFocusNode,
-                    onPressed: () async {
-                      if (_emailController.text.isEmpty ||
-                          _passwordController.text.isEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text(
-                              "Email and Password cannot be empty.",
-                            ),
-                          ),
-                        );
-                        return;
-                      }
-                      try {
-                        final userCredential = await FirebaseAuth.instance
-                            .createUserWithEmailAndPassword(
-                              email: _emailController
-                                  .text, // You can get this data from user using text fields
-                              password: _passwordController
-                                  .text, // You can get this data from user using text fields
-                            );
-                        developer.log(
-                          "User registered: ${userCredential.user?.email}",
-                          level: 200,
-                        );
-                      } on FirebaseAuthException catch (e) {
-                        // if (!mounted) return; //* GPT said i should add this to get rid of context warning IDK what it dose so i comment it out
-                        switch (e.code) {
-                          case "email-already-in-use":
-                            developer.log(
-                              "Email already in use ${_emailController.text}",
-                              level: 600,
-                            );
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text("Email already in use"),
-                              ),
-                            );
-                          case "weak-password":
-                            developer.log(
-                              "Password is too weak for user ${_emailController.text}",
-                              level: 600,
-                            );
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text("Password is too weak"),
-                              ),
-                            );
-                          case "invalid-email":
-                            developer.log(
-                              "Firebase Email is not valid",
-                              level: 600,
-                            );
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text("Email is not valid"),
-                              ),
-                            );
-                          default:
-                            developer.log(
-                              "Error registering in user: $e",
-                              level: 600,
-                            );
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text("Unknown register error occured"),
-                              ),
-                            );
-                        }
-                      } catch (e) {
-                        developer.log("Error registering user: $e", level: 600);
-                      }
-                    },
-                    child: Text("Register"),
-                  ),
                   ElevatedButton(
                     onPressed: () async {
                       if (_emailController.text.isEmpty ||
@@ -277,6 +204,12 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ],
               ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                context.push(registerPageRoute);
+              },
+              child: Text("Not a user? Register here!!"),
             ),
             FutureBuilder(
               future: signInFuture,

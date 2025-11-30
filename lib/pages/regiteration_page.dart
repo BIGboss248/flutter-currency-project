@@ -1,6 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/constants/routes.dart';
 import 'dart:developer' as developer;
+
+import 'package:go_router/go_router.dart';
 
 class RegisterationPage extends StatefulWidget {
   const RegisterationPage({super.key, required this.pageIndex});
@@ -101,14 +104,17 @@ class _RegisterationPageState extends State<RegisterationPage> {
                     "User registered: ${userCredential.user?.email}",
                     level: 200,
                   );
-                  final user = FirebaseAuth.instance.currentUser;
                   developer.log(
-                    "Verifing user Email ${userCredential.user?.email}",
+                    "Sending user ${userCredential.user?.email} to verification page",
                     level: 200,
                   );
-                  setState(() {
-                    userVerifiEmailFuture = user?.sendEmailVerification();
-                  });
+                  developer.log(
+                    "Routing to $verifyEmailPageRoute?email=${_emailController.text}",
+                    level: 200,
+                  );
+                  context.push(
+                    "$verifyEmailPageRoute?email=${_emailController.text}",
+                  );
                 } on FirebaseAuthException catch (e) {
                   // if (!mounted) return; //* GPT said i should add this to get rid of context warning IDK what it dose so i comment it out
                   switch (e.code) {

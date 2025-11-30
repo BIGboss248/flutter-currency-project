@@ -6,6 +6,7 @@ import 'package:flutter_application_2/pages/login_page.dart';
 import 'package:flutter_application_2/pages/regiteration_page.dart';
 import 'package:flutter_application_2/pages/transactions.dart';
 import 'package:flutter_application_2/pages/home.dart';
+import 'package:flutter_application_2/pages/verify_email_page.dart';
 import 'package:flutter_application_2/widgets/theme_change.dart';
 import 'package:go_router/go_router.dart';
 import 'firebase_options.dart';
@@ -29,6 +30,13 @@ final _router = GoRouter(
     GoRoute(
       path: registerPageRoute,
       builder: (context, state) => RegisterationPage(pageIndex: 3),
+    ),
+    GoRoute(
+      path: verifyEmailPageRoute,
+      builder: (context, state) {
+        final email = state.uri.queryParameters['email'];
+        return VerifyEmailPage(pageIndex: 4, email: email);
+      },
     ),
   ],
 );

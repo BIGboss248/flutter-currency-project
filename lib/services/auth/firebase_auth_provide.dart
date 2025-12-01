@@ -1,6 +1,8 @@
 /*
   In this file we create firebase authProvide for our authService to use
 */
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_application_2/firebase_options.dart';
 import 'package:flutter_application_2/services/auth/auth_provider.dart';
 import 'package:flutter_application_2/services/auth/auth_execptions.dart';
 import 'package:flutter_application_2/services/auth/auth_user.dart';
@@ -99,5 +101,10 @@ class FireBaseAuthProvide implements AuthProvider {
       return AuthUser.fromFireBase(user);
     }
     return null;
+  }
+
+  @override
+  Future<void> initialize() async {
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   }
 }

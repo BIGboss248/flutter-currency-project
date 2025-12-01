@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/constants/routes.dart';
+import 'package:flutter_application_2/services/auth/auth_execptions.dart';
+import 'package:flutter_application_2/services/auth/auth_service.dart';
+import 'package:flutter_application_2/services/auth/auth_user.dart';
 import 'package:flutter_application_2/widgets/main_bot_navbar.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:developer' as developer;
 
 import 'package:go_router/go_router.dart';
@@ -19,7 +21,7 @@ class _LoginPageState extends State<LoginPage> {
   late final TextEditingController _emailController;
   late final TextEditingController _passwordController;
 
-  Future<UserCredential>? signInFuture; // Initialize signInFuture to null
+  Future<AuthUser>? signInFuture; // Initialize signInFuture to null
   Future<dynamic>? signOutFuture;
 
   final emailFocusNode = FocusNode();
@@ -115,77 +117,65 @@ class _LoginPageState extends State<LoginPage> {
                         return;
                       }
                       try {
-                        signInFuture = FirebaseAuth.instance
-                            .signInWithEmailAndPassword(
-                              email: _emailController.text,
-                              password: _passwordController.text,
-                            );
+                        signInFuture = AuthService.firebase().logIn(
+                          email: _emailController.text,
+                          password: _passwordController.text,
+                        );
                         // The idea for below is to await data to be fetched before logging using developer.log so the data is not shown as null because of async nature
                         // ignore: unused_local_variable
                         final userCredential = await signInFuture;
                         developer.log(
-                          "User logged in: ${FirebaseAuth.instance.currentUser?.email}",
+                          "User logged in: ${AuthService.firebase().currentUser}", //TODO add Email to Auth user
                           level: 200,
                         );
-                      } on FirebaseAuthException catch (e) {
-                        // if (!mounted) return; //* GPT said i should add this to get rid of context warning IDK what it dose so i comment it out
-                        switch (e.code) {
-                          case "wrong-password":
-                            developer.log(
-                              "Wrong password entered for user ${_emailController.text}",
-                              level: 600,
-                            );
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text("Wrong username or password"),
-                              ),
-                            );
-                          case "user-not-found":
-                            developer.log(
-                              "Firebase User not found",
-                              level: 600,
-                            );
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text("Email is not registered"),
-                              ),
-                            );
-                          case "invalid-email":
-                            developer.log(
-                              "Firebase Email is not valid",
-                              level: 600,
-                            );
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text("Email is not valid"),
-                              ),
-                            );
-                          default:
-                            developer.log(
-                              "Error logging in user: $e",
-                              level: 600,
-                            );
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text("Unknown login error occured"),
-                              ),
-                            );
-                        }
-                      } catch (e) {
-                        developer.log("Error logging in user: $e", level: 600);
+                      } on WrongPasswordAuthExecption {
+                        developer.log(
+                          "Wrong password entered for user ${_emailController.text}",
+                          level: 600,
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("Wrong username or password"),
+                          ),
+                        );
+                      } on UserNotFoundAuthExecption {
+                        developer.log("Firebase User not found", level: 600);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("Email is not registered"),
+                          ),
+                        );
+                      } on InvalidEmailAuthExecption {
+                        developer.log(
+                          "Firebase Email is not valid",
+                          level: 600,
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Email is not valid")),
+                        );
+                      } on GenericAuthExecption {
+                        developer.log(
+                          "generic error logging in user",
+                          level: 600,
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("Unknown login error occured"),
+                          ),
+                        );
                       }
                     },
                     child: Text("Login"),
                   ),
                   ElevatedButton(
                     onPressed: () async {
-                      if (FirebaseAuth.instance.currentUser != null) {
+                      if (AuthService.firebase().currentUser != null) {
                         final shouldLogOut = await showLogoutDialog(context);
                         if (shouldLogOut != true) {
                           developer.log("Logout cancelled by user", level: 200);
                           return;
                         }
-                        signOutFuture = FirebaseAuth.instance.signOut();
+                        signOutFuture = AuthService.firebase().logOut();
                         developer.log("User logged out", level: 200);
                       } else {
                         developer.log(

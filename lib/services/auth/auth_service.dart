@@ -1,6 +1,6 @@
 import 'package:flutter_application_2/services/auth/auth_provider.dart';
 import 'package:flutter_application_2/services/auth/auth_user.dart';
-import 'package:flutter_application_2/services/auth/firebase_auth_provide.dart';
+import 'package:flutter_application_2/services/auth/firebase_auth_provider.dart';
 
 class AuthService implements AuthProvider {
   final AuthProvider provider;

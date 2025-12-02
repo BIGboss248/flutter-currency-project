@@ -9,7 +9,6 @@ import 'package:flutter_application_2/pages/verify_email_page.dart';
 import 'package:flutter_application_2/services/auth/auth_service.dart';
 import 'package:flutter_application_2/widgets/theme_change.dart';
 import 'package:go_router/go_router.dart';
-import 'firebase_options.dart';
 import 'dart:developer' as developer;
 
 // GoRouter configuration

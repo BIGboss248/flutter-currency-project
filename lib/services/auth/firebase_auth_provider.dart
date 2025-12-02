@@ -9,7 +9,7 @@ import 'package:flutter_application_2/services/auth/auth_user.dart';
 import 'package:firebase_auth/firebase_auth.dart'
     show FirebaseAuth, FirebaseAuthException;
 
-class FireBaseAuthProvide implements AuthProvider {
+class FireBaseAuthProvider implements AuthProvider {
   @override
   Future<AuthUser> createUser({
     required String email,

@@ -1,6 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/constants/routes.dart';
+import 'package:flutter_application_2/services/auth/auth_execptions.dart';
+import 'package:flutter_application_2/services/auth/auth_service.dart';
 import 'dart:developer' as developer;
 
 import 'package:go_router/go_router.dart';
@@ -95,17 +96,17 @@ class _RegisterationPageState extends State<RegisterationPage> {
                   return;
                 }
                 try {
-                  final userCredential = await FirebaseAuth.instance
-                      .createUserWithEmailAndPassword(
+                  final userCredential = await AuthService.firebase()
+                      .createUser(
                         email: _emailController.text,
                         password: _passwordController.text,
                       );
                   developer.log(
-                    "User registered: ${userCredential.user?.email}",
+                    "User registered: ${_emailController.text}",
                     level: 200,
                   );
                   developer.log(
-                    "Sending user ${userCredential.user?.email} to verification page",
+                    "Sending user ${_emailController.text} to verification page",
                     level: 200,
                   );
                   developer.log(
@@ -115,41 +116,34 @@ class _RegisterationPageState extends State<RegisterationPage> {
                   context.push(
                     "$verifyEmailPageRoute?email=${_emailController.text}",
                   );
-                } on FirebaseAuthException catch (e) {
-                  // if (!mounted) return; //* GPT said i should add this to get rid of context warning IDK what it dose so i comment it out
-                  switch (e.code) {
-                    case "email-already-in-use":
-                      developer.log(
-                        "Email already in use ${_emailController.text}",
-                        level: 600,
-                      );
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("Email already in use")),
-                      );
-                    case "weak-password":
-                      developer.log(
-                        "Password is too weak for user ${_emailController.text}",
-                        level: 600,
-                      );
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("Password is too weak")),
-                      );
-                    case "invalid-email":
-                      developer.log("Firebase Email is not valid", level: 600);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("Email is not valid")),
-                      );
-                    default:
-                      developer.log(
-                        "Error registering in user: $e",
-                        level: 600,
-                      );
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("Unknown register error occured"),
-                        ),
-                      );
-                  }
+                } on EmailAlreadyInUseAuthExecption {
+                  developer.log(
+                    "Email already in use ${_emailController.text}",
+                    level: 600,
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Email already in use")),
+                  );
+                } on WeakPasswordAuthExecption {
+                  developer.log(
+                    "Password is too weak for user ${_emailController.text}",
+                    level: 600,
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Password is too weak")),
+                  );
+                } on InvalidEmailAuthExecption {
+                  developer.log("Firebase Email is not valid", level: 600);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Email is not valid")),
+                  );
+                } on GenericAuthExecption {
+                  developer.log("Error registering in user", level: 600);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Unknown register error occured"),
+                    ),
+                  );
                 } catch (e) {
                   developer.log("Error registering user: $e", level: 600);
                 }

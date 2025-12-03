@@ -130,23 +130,16 @@ class _LoginPageState extends State<LoginPage> {
                     onPressed: () async {
                       if (AuthService.firebase().currentUser != null) {
                         final shouldLogOut = await showLogoutDialog(context);
-                        if (shouldLogOut != true) {
+                        if (shouldLogOut == false) {
                           developer.log("Logout cancelled by user", level: 200);
                           return;
+                        } else {
+                          setState(() {
+                            signOutFuture = AuthService.firebase().logOut();
+                          });
+                          developer.log("Logging user out", level: 200);
+                          return;
                         }
-                        setState(() {
-                          signOutFuture = AuthService.firebase().logOut();
-                        });
-                        developer.log("User logged out", level: 200);
-
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text(
-                              "You are not logged in",
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        );
                       } else {
                         developer.log(
                           "No user is currently logged in",
@@ -240,6 +233,18 @@ class _LoginPageState extends State<LoginPage> {
                   case ConnectionState.waiting:
                     return CircularProgressIndicator();
                   case ConnectionState.done:
+                    if (snapshot.hasError) {
+                      developer.log(
+                        "Error logging out user ${snapshot.error}",
+                        level: 600,
+                      );
+                      return Text(
+                        "Error logging you out",
+                        style: TextStyle(color: Colors.red),
+                        textAlign: TextAlign.center,
+                      );
+                    }
+                    developer.log("User logged out", level: 200);
                     return Text(
                       "Logged out successfully",
                       style: TextStyle(color: Colors.green),

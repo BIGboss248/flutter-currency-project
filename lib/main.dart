@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/constants/routes.dart';
-import 'package:flutter_application_2/constants/theme.dart';
-import 'package:flutter_application_2/pages/login_page.dart';
-import 'package:flutter_application_2/pages/regiteration_page.dart';
-import 'package:flutter_application_2/pages/transactions.dart';
-import 'package:flutter_application_2/pages/home.dart';
-import 'package:flutter_application_2/pages/verify_email_page.dart';
-import 'package:flutter_application_2/services/auth/auth_service.dart';
-import 'package:flutter_application_2/widgets/theme_change.dart';
+import 'package:budgee/constants/routes.dart';
+import 'package:budgee/constants/theme.dart';
+import 'package:budgee/pages/login_page.dart';
+import 'package:budgee/pages/regiteration_page.dart';
+import 'package:budgee/pages/transactions.dart';
+import 'package:budgee/pages/home.dart';
+import 'package:budgee/pages/verify_email_page.dart';
+import 'package:budgee/services/auth/auth_service.dart';
+import 'package:budgee/widgets/theme_change.dart';
 import 'package:go_router/go_router.dart';
 import 'dart:developer' as developer;
 

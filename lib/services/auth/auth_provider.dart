@@ -1,4 +1,4 @@
-import 'package:flutter_application_2/services/auth/auth_user.dart';
+import 'package:budgee/services/auth/auth_user.dart';
 
 abstract class AuthProvider {
   Future<void> initialize();

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/widgets/theme_change.dart';
+import 'package:budgee/widgets/theme_change.dart';
 
 class MainDrawer extends StatefulWidget {
   const MainDrawer({super.key});

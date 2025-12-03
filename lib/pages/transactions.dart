@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/widgets/main_drawer.dart';
-import 'package:flutter_application_2/widgets/main_bot_navbar.dart';
+import 'package:budgee/widgets/main_drawer.dart';
+import 'package:budgee/widgets/main_bot_navbar.dart';
 
 class Transactions extends StatefulWidget {
   const Transactions({required this.pageIndex, super.key});

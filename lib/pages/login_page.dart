@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/constants/routes.dart';
-import 'package:flutter_application_2/services/auth/auth_execptions.dart';
-import 'package:flutter_application_2/services/auth/auth_service.dart';
-import 'package:flutter_application_2/services/auth/auth_user.dart';
-import 'package:flutter_application_2/widgets/main_bot_navbar.dart';
-import 'package:flutter_application_2/widgets/main_drawer.dart';
+import 'package:budgee/constants/routes.dart';
+import 'package:budgee/services/auth/auth_execptions.dart';
+import 'package:budgee/services/auth/auth_service.dart';
+import 'package:budgee/services/auth/auth_user.dart';
+import 'package:budgee/widgets/main_bot_navbar.dart';
+import 'package:budgee/widgets/main_drawer.dart';
 import 'dart:developer' as developer;
 
 import 'package:go_router/go_router.dart';

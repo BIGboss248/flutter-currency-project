@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/utils/currency.dart';
-import 'package:flutter_application_2/widgets/main_drawer.dart';
-import 'package:flutter_application_2/widgets/main_bot_navbar.dart';
+import 'package:budgee/utils/currency.dart';
+import 'package:budgee/widgets/main_drawer.dart';
+import 'package:budgee/widgets/main_bot_navbar.dart';
 import 'dart:developer' as developer;
 
 class HomePage extends StatefulWidget {

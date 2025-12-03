@@ -116,54 +116,13 @@ class _LoginPageState extends State<LoginPage> {
                         );
                         return;
                       }
-                      try {
+
+                      setState(() {
                         signInFuture = AuthService.firebase().logIn(
                           email: _emailController.text,
                           password: _passwordController.text,
                         );
-                        // The idea for below is to await data to be fetched before logging using developer.log so the data is not shown as null because of async nature
-                        // ignore: unused_local_variable
-                        final userCredential = await signInFuture;
-                        developer.log(
-                          "User logged in: ${AuthService.firebase().currentUser}", //TODO add Email to Auth user
-                          level: 200,
-                        );
-                      } on WrongPasswordAuthExecption {
-                        developer.log(
-                          "Wrong password entered for user ${_emailController.text}",
-                          level: 600,
-                        );
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text("Wrong username or password"),
-                          ),
-                        );
-                      } on UserNotFoundAuthExecption {
-                        developer.log("Firebase User not found", level: 600);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text("Email is not registered"),
-                          ),
-                        );
-                      } on InvalidEmailAuthExecption {
-                        developer.log(
-                          "Firebase Email is not valid",
-                          level: 600,
-                        );
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Email is not valid")),
-                        );
-                      } on GenericAuthExecption {
-                        developer.log(
-                          "generic error logging in user",
-                          level: 600,
-                        );
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text("Unknown login error occured"),
-                          ),
-                        );
-                      }
+                      });
                     },
                     child: Text("Login"),
                   ),
@@ -206,9 +165,6 @@ class _LoginPageState extends State<LoginPage> {
             FutureBuilder(
               future: signInFuture,
               builder: (BuildContext context, AsyncSnapshot snapshot) {
-                if (signInFuture == null) {
-                  return const SizedBox.shrink(); // Placeholder when no future is set
-                }
                 switch (snapshot.connectionState) {
                   case ConnectionState.none:
                   case ConnectionState.waiting:
@@ -216,15 +172,47 @@ class _LoginPageState extends State<LoginPage> {
                   case ConnectionState.active:
                   case ConnectionState.done:
                     if (snapshot.hasError) {
-                      return Container(
-                        color: Colors.amber,
-                        padding: EdgeInsets.all(10.0),
-                        child: Text(
-                          "Error occured during login",
-                          style: const TextStyle(color: Colors.red),
-                        ),
+                      String message = "Unknown error occured";
+                      switch (snapshot.error) {
+                        case WrongPasswordAuthExecption():
+                          {
+                            developer.log(
+                              "Wrong password entered for user ${_emailController.text}",
+                              level: 600,
+                            );
+                            message = "Wrong user name or password";
+                          }
+                        case UserNotFoundAuthExecption():
+                          {
+                            developer.log("User not found", level: 600);
+                            message = "This user is not registered";
+                          }
+                        case InvalidEmailAuthExecption():
+                          {
+                            developer.log(
+                              "Firebase Email is not valid",
+                              level: 600,
+                            );
+                            message = "The email provided is not valid";
+                          }
+                        case GenericAuthExecption():
+                          {
+                            developer.log(
+                              "generic error logging in user",
+                              level: 600,
+                            );
+                            message = "Unknown login error occured";
+                          }
+                      }
+                      return Text(
+                        message,
+                        style: const TextStyle(color: Colors.red),
                       );
                     } else {
+                      developer.log(
+                        "User logged in: ${AuthService.firebase().currentUser}", //TODO add Email to Auth user
+                        level: 200,
+                      );
                       return Container(
                         color: Colors.amber,
                         child: const Text(

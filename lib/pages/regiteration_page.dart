@@ -95,58 +95,12 @@ class _RegisterationPageState extends State<RegisterationPage> {
                   );
                   return;
                 }
-                try {
-                  final userCredential = await AuthService.firebase()
-                      .createUser(
-                        email: _emailController.text,
-                        password: _passwordController.text,
-                      );
-                  developer.log(
-                    "User registered: ${_emailController.text}",
-                    level: 200,
+                setState(() {
+                  userVerifiEmailFuture = AuthService.firebase().createUser(
+                    email: _emailController.text,
+                    password: _passwordController.text,
                   );
-                  developer.log(
-                    "Sending user ${_emailController.text} to verification page",
-                    level: 200,
-                  );
-                  developer.log(
-                    "Routing to $verifyEmailPageRoute?email=${_emailController.text}",
-                    level: 200,
-                  );
-                  context.push(
-                    "$verifyEmailPageRoute?email=${_emailController.text}",
-                  );
-                } on EmailAlreadyInUseAuthExecption {
-                  developer.log(
-                    "Email already in use ${_emailController.text}",
-                    level: 600,
-                  );
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Email already in use")),
-                  );
-                } on WeakPasswordAuthExecption {
-                  developer.log(
-                    "Password is too weak for user ${_emailController.text}",
-                    level: 600,
-                  );
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Password is too weak")),
-                  );
-                } on InvalidEmailAuthExecption {
-                  developer.log("Firebase Email is not valid", level: 600);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Email is not valid")),
-                  );
-                } on GenericAuthExecption {
-                  developer.log("Error registering in user", level: 600);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text("Unknown register error occured"),
-                    ),
-                  );
-                } catch (e) {
-                  developer.log("Error registering user: $e", level: 600);
-                }
+                });
               },
               child: Text("Register"),
             ),
@@ -154,16 +108,63 @@ class _RegisterationPageState extends State<RegisterationPage> {
               future: userVerifiEmailFuture,
               builder: (context, snapshot) {
                 switch (snapshot.connectionState) {
+                  case ConnectionState.none:
+                    return SizedBox.shrink();
+                  case ConnectionState.active:
                   case ConnectionState.waiting:
                     return CircularProgressIndicator();
                   case ConnectionState.done:
+                    String message;
+                    if (snapshot.hasError) {
+                      developer.log(snapshot.error.toString());
+                      switch (snapshot.error) {
+                        case EmailAlreadyInUseAuthExecption():
+                          {
+                            message = "Email already in use";
+                          }
+                        case InvalidEmailAuthExecption():
+                          {
+                            message = "Invalid Email";
+                          }
+                        case WrongPasswordAuthExecption():
+                          {
+                            message = "Wrong username or password";
+                          }
+                        case WeakPasswordAuthExecption():
+                          {
+                            message = "Password is too weak";
+                          }
+                        case GenericAuthExecption():
+                          {
+                            message = "Unknown error occured";
+                          }
+                        default:
+                          {
+                            message = "Error occured";
+                          }
+                      }
+                      return Text(message, style: TextStyle(color: Colors.red));
+                    }
+                    developer.log(
+                      "User registered: ${_emailController.text}",
+                      level: 200,
+                    );
+                    developer.log(
+                      "Sending user ${_emailController.text} to verification page",
+                      level: 200,
+                    );
+                    developer.log(
+                      "Routing to $verifyEmailPageRoute?email=${_emailController.text}",
+                      level: 200,
+                    );
+                    context.push(
+                      "$verifyEmailPageRoute?email=${_emailController.text}",
+                    );
                     return Text(
                       "Verification Email sent please verify your email",
                       style: TextStyle(color: Colors.green),
                       textAlign: TextAlign.center,
                     );
-                  default:
-                    return SizedBox.shrink();
                 }
               },
             ),

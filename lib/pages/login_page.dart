@@ -134,8 +134,19 @@ class _LoginPageState extends State<LoginPage> {
                           developer.log("Logout cancelled by user", level: 200);
                           return;
                         }
-                        signOutFuture = AuthService.firebase().logOut();
+                        setState(() {
+                          signOutFuture = AuthService.firebase().logOut();
+                        });
                         developer.log("User logged out", level: 200);
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              "You are not logged in",
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        );
                       } else {
                         developer.log(
                           "No user is currently logged in",
@@ -214,12 +225,9 @@ class _LoginPageState extends State<LoginPage> {
                         "User logged in: ${AuthService.firebase().currentUser}", //TODO add Email to Auth user
                         level: 200,
                       );
-                      return Container(
-                        color: Colors.amber,
-                        child: const Text(
-                          "Login Successful!",
-                          style: TextStyle(color: Colors.green),
-                        ),
+                      return const Text(
+                        "Login Successful!",
+                        style: TextStyle(color: Colors.green),
                       );
                     }
                 }
@@ -232,13 +240,9 @@ class _LoginPageState extends State<LoginPage> {
                   case ConnectionState.waiting:
                     return CircularProgressIndicator();
                   case ConnectionState.done:
-                    return Container(
-                      color: Colors.amber,
-                      padding: EdgeInsets.all(10.0),
-                      child: Text(
-                        "Logged out successfully",
-                        style: TextStyle(color: Colors.green),
-                      ),
+                    return Text(
+                      "Logged out successfully",
+                      style: TextStyle(color: Colors.green),
                     );
                   default:
                     return SizedBox.shrink();

@@ -4,6 +4,7 @@ import 'package:flutter_application_2/services/auth/auth_execptions.dart';
 import 'package:flutter_application_2/services/auth/auth_service.dart';
 import 'package:flutter_application_2/services/auth/auth_user.dart';
 import 'package:flutter_application_2/widgets/main_bot_navbar.dart';
+import 'package:flutter_application_2/widgets/main_drawer.dart';
 import 'dart:developer' as developer;
 
 import 'package:go_router/go_router.dart';
@@ -51,6 +52,7 @@ class _LoginPageState extends State<LoginPage> {
         centerTitle: true,
         automaticallyImplyLeading: true, // The back button to previous page
       ),
+      endDrawer: MainDrawer(),
       bottomNavigationBar: MainNavBar(currentIndex: widget.pageIndex),
       resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(

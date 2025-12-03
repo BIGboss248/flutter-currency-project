@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/utils/currency.dart';
-import 'package:flutter_application_2/widgets/theme_change.dart';
+import 'package:flutter_application_2/widgets/main_drawer.dart';
 import 'package:flutter_application_2/widgets/main_bot_navbar.dart';
 import 'dart:developer' as developer;
 
@@ -31,8 +31,8 @@ class _HomePageState extends State<HomePage> {
         title: Text("Home"),
         centerTitle: true,
         automaticallyImplyLeading: true,
-        actions: [ThemeChangeIcon()],
       ),
+      endDrawer: MainDrawer(),
       bottomNavigationBar: MainNavBar(currentIndex: widget.pageIndex),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_2/constants/routes.dart';
 import 'package:flutter_application_2/services/auth/auth_execptions.dart';
 import 'package:flutter_application_2/services/auth/auth_service.dart';
+import 'package:flutter_application_2/widgets/main_drawer.dart';
 import 'dart:developer' as developer;
 
 import 'package:go_router/go_router.dart';
@@ -41,6 +42,7 @@ class _RegisterationPageState extends State<RegisterationPage> {
         centerTitle: true,
         automaticallyImplyLeading: true,
       ),
+      endDrawer: MainDrawer(),
       body: Container(
         padding: EdgeInsets.all(20.0),
         child: Column(

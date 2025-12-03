@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/widgets/theme_change.dart';
+import 'package:flutter_application_2/widgets/main_drawer.dart';
 import 'package:flutter_application_2/widgets/main_bot_navbar.dart';
 
 class Transactions extends StatefulWidget {
@@ -17,16 +17,13 @@ class _TransactionsState extends State<Transactions> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        actions: [ThemeChangeIcon()],
-      ),
+      appBar: AppBar(title: Text("Transactions"), centerTitle: true),
       bottomNavigationBar: MainNavBar(currentIndex: widget.pageIndex),
-
+      endDrawer: MainDrawer(),
       body: ListView.builder(
         padding: const EdgeInsets.all(16),
         itemCount: items.length,
         itemBuilder: (context, index) => items[index],
-        
       ),
 
       floatingActionButton: FloatingActionButton(

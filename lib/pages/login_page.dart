@@ -217,7 +217,8 @@ class _LoginPageState extends State<LoginPage> {
                       );
                     } else {
                       developer.log(
-                        "User logged in: ${AuthService.firebase().currentUser}", //TODO add Email to Auth user
+                        "User logged in: ${AuthService.firebase().currentUser?.getEmail ?? "Unknown"}",
+                        
                         level: 200,
                       );
                       return const Text(

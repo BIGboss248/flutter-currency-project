@@ -167,6 +167,7 @@ class _LoginPageState extends State<LoginPage> {
               builder: (BuildContext context, AsyncSnapshot snapshot) {
                 switch (snapshot.connectionState) {
                   case ConnectionState.none:
+                    return SizedBox.shrink();
                   case ConnectionState.waiting:
                     return const CircularProgressIndicator();
                   case ConnectionState.active:

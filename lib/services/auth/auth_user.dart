@@ -9,7 +9,9 @@ import 'package:flutter/foundation.dart'; // For class tags
 @immutable
 class AuthUser {
   final bool isEmailVerified;
-  const AuthUser(this.isEmailVerified);
-  factory AuthUser.fromFireBase(User user) => AuthUser(user.emailVerified);
+  final String? email;
+  String? get getEmail => email;
+  const AuthUser(this.isEmailVerified, this.email);
+  factory AuthUser.fromFireBase(User user) =>
+      AuthUser(user.emailVerified, user.email);
 }
-

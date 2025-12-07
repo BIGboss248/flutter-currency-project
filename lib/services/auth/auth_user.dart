@@ -10,7 +10,7 @@ import 'package:flutter/foundation.dart'; // For class tags
 class AuthUser {
   final bool isEmailVerified;
   final String? email;
-  String? get getEmail => email;
+  get getEmail => email;
   const AuthUser(this.isEmailVerified, this.email);
   factory AuthUser.fromFireBase(User user) =>
       AuthUser(user.emailVerified, user.email);

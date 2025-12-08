@@ -36,6 +36,12 @@ const createNoteTable = '''CREATE TABLE IF NOT EXISTS "note" (
 class NotesService {
   Database? _db;
 
+  /* Make NoteService a singleton*/
+  NotesService._sharedInstance();
+  static final NotesService _shared = NotesService._sharedInstance();
+  factory NotesService() => _shared;
+
+
   /* This acts as a cache to store notes so client won't have to fetch it over and over again */
   List<DatabaseNote> _notes = [];
 

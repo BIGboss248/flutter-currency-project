@@ -1,6 +1,6 @@
+import 'package:budgee/services/auth/auth_service.dart';
+import 'package:budgee/services/crud/notes_service.dart';
 import 'package:flutter/material.dart';
-import 'package:budgee/widgets/main_drawer.dart';
-import 'package:budgee/widgets/main_bot_navbar.dart';
 
 class Transactions extends StatefulWidget {
   const Transactions({required this.pageIndex, super.key});
@@ -12,40 +12,50 @@ class Transactions extends StatefulWidget {
 }
 
 class _TransactionsState extends State<Transactions> {
+  late final NotesService _noteService;
   final List<Widget> items = []; // MUST NOT be const
+  String get userEmail => AuthService.firebase().currentUser!.email!;
+
+  @override
+  void initState() {
+    _noteService = NotesService();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _noteService.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Transactions"), centerTitle: true),
-      bottomNavigationBar: MainNavBar(currentIndex: widget.pageIndex),
-      endDrawer: MainDrawer(),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: items.length,
-        itemBuilder: (context, index) => items[index],
-      ),
-
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
-        onPressed: () {
-          setState(() {
-            items.add(
-              Container(
-                margin: const EdgeInsets.only(bottom: 16),
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.blueAccent,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: const Text(
-                  "New transaction added",
-                  style: TextStyle(color: Colors.white, fontSize: 18),
-                ),
-              ),
-            );
-          });
-        },
+      appBar: AppBar(title: Text("notes")),
+      body: Container(
+        alignment: Alignment.center,
+        child: Column(
+          children: [
+            FutureBuilder(
+              future: _noteService.getOrCreateUser(email: userEmail),
+              builder: (context, snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.done:
+                    return StreamBuilder(stream: _noteService.allNotes, builder: (context, snapshot) {
+                      switch (snapshot.connectionState){
+                        case ConnectionState.waiting:
+                          return const  Text("Waiting for all notes");
+                        default:
+                          return CircularProgressIndicator();
+                      }
+                    },);
+                  default:
+                    return CircularProgressIndicator();
+                }
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

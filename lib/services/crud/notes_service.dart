@@ -45,14 +45,14 @@ class NotesService {
   final _notesStreamController =
       StreamController<List<DatabaseNote>>.broadcast();
 
-  Future<DatabaseUser> getOrCreateUser ({required String email}) async{
-    try{
+  Future<DatabaseUser> getOrCreateUser({required String email}) async {
+    try {
       final user = await getUser(email: email);
       return user;
-    } on CouldNotFindUserException{
+    } on CouldNotFindUserException {
       final user = await createUser(email: email);
       return user;
-    } catch (e){
+    } catch (e) {
       /* This will make code easier to debug since you can put a breakpoint here */
       rethrow;
     }
@@ -77,6 +77,15 @@ class NotesService {
     } else {
       return db;
     }
+  }
+
+  /* 
+  The idea is that on each databse operation the database gets opened without the need to open database before each and every operation we want to do 
+  */
+  Future<void> _ensureDbIsOpen() async {
+    try {
+      await open();
+    } on DatabaseAlreadyOpenException {}
   }
 
   Future<void> open() async {
@@ -116,6 +125,7 @@ class NotesService {
   Create user with given Email 
   */
   Future<DatabaseUser> createUser({required String email}) async {
+    _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     final results = await db.query(
       userTable,
@@ -136,6 +146,7 @@ class NotesService {
 
   /* Get(read) user */
   Future<DatabaseUser> getUser({required String email}) async {
+    _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     final results = await db.query(
       userTable,
@@ -154,6 +165,7 @@ class NotesService {
    Delete user
    */
   Future<void> deleteUser({required String email}) async {
+    _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     final deletedCount = await db.delete(
       userTable,
@@ -167,6 +179,7 @@ class NotesService {
 
   /* Create note */
   Future<DatabaseNote> createNote({required DatabaseUser owner}) async {
+    _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
 
     /* We check this part for security purposes to stop people from creating a note with the correct ID*/
@@ -198,6 +211,7 @@ class NotesService {
   }
 
   Future<void> deleteNote({required int id}) async {
+    _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     final deletedCount = await db.delete(
       noteTable,
@@ -213,6 +227,7 @@ class NotesService {
   }
 
   Future<int> deleteAllNotes() async {
+    _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     _notes = [];
     _notesStreamController.add(_notes);
@@ -220,6 +235,7 @@ class NotesService {
   }
 
   Future<DatabaseNote> getNote({required int id}) async {
+    _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     final notes = await db.query(
       noteTable,
@@ -233,7 +249,7 @@ class NotesService {
     } else {
       final note = DatabaseNote.fromRow(notes.first);
       /* Update cache */
-      _notes.removeWhere((note)=> note.id == id);
+      _notes.removeWhere((note) => note.id == id);
       _notes.add(note);
       _notesStreamController.add(_notes);
       return note;
@@ -241,6 +257,7 @@ class NotesService {
   }
 
   Future<Iterable<DatabaseNote>> getAllNotes() async {
+    _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     final notes = await db.query(noteTable);
     return notes.map((noteRow) => DatabaseNote.fromRow(noteRow));
@@ -250,6 +267,7 @@ class NotesService {
     required DatabaseNote note,
     required String text,
   }) async {
+    _ensureDbIsOpen();
     /* Making sure the note exists */
     await getNote(id: note.id);
     final db = _getDatabaseOrThrow();
@@ -261,11 +279,10 @@ class NotesService {
       throw CouldNotUpdateNote();
     } else {
       final updatedNote = await getNote(id: note.id);
-      _notes.removeWhere((note)=> note.id == updatedNote.id);
+      _notes.removeWhere((note) => note.id == updatedNote.id);
       _notes.add(updatedNote);
       _notesStreamController.add(_notes);
       return updatedNote;
-
     }
   }
 }

@@ -194,6 +194,7 @@ class NotesService {
     _notes.add(note);
     /* Add note list to stream controler so UI gets updated */
     _notesStreamController.add(_notes);
+    return note;
   }
 
   Future<void> deleteNote({required int id}) async {

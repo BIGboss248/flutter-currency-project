@@ -106,6 +106,12 @@ class _RegisterationPageState extends State<RegisterationPage> {
               },
               child: Text("Register"),
             ),
+            ElevatedButton(
+              onPressed: () {
+                context.push(verifyEmailPageRoute);
+              },
+              child: Text("Email verification"),
+            ),
             FutureBuilder(
               future: userVerifiEmailFuture,
               builder: (context, snapshot) {
@@ -151,17 +157,18 @@ class _RegisterationPageState extends State<RegisterationPage> {
                       "User registered: ${_emailController.text}",
                       level: 200,
                     );
-                    developer.log(
-                      "Sending user ${_emailController.text} to verification page",
-                      level: 200,
-                    );
-                    developer.log(
-                      "Routing to $verifyEmailPageRoute?email=${_emailController.text}",
-                      level: 200,
-                    );
-                    context.push(
-                      "$verifyEmailPageRoute?email=${_emailController.text}",
-                    );
+                    // developer.log(
+                    //   "Sending user ${_emailController.text} to verification page",
+                    //   level: 200,
+                    // );
+                    // developer.log(
+                    //   "Routing to $verifyEmailPageRoute?email=${_emailController.text}",
+                    //   level: 200,
+                    // );
+                    AuthService.firebase().sendEmailVerification();
+                    // context.push(
+                    //   "$verifyEmailPageRoute?email=${_emailController.text}",
+                    // );
                     return Text(
                       "Verification Email sent please verify your email",
                       style: TextStyle(color: Colors.green),

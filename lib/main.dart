@@ -3,7 +3,7 @@ import 'package:budgee/constants/routes.dart';
 import 'package:budgee/constants/theme.dart';
 import 'package:budgee/pages/login_page.dart';
 import 'package:budgee/pages/regiteration_page.dart';
-import 'package:budgee/pages/transactions.dart';
+import 'package:budgee/pages/notes_page.dart';
 import 'package:budgee/pages/home.dart';
 import 'package:budgee/pages/verify_email_page.dart';
 import 'package:budgee/services/auth/auth_service.dart';

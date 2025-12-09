@@ -41,7 +41,6 @@ class NotesService {
   static final NotesService _shared = NotesService._sharedInstance();
   factory NotesService() => _shared;
 
-
   /* This acts as a cache to store notes so client won't have to fetch it over and over again */
   List<DatabaseNote> _notes = [];
 
@@ -52,7 +51,7 @@ class NotesService {
       StreamController<List<DatabaseNote>>.broadcast();
 
   Stream<List<DatabaseNote>> get allNotes => _notesStreamController.stream;
-  
+
   Future<DatabaseUser> getOrCreateUser({required String email}) async {
     try {
       final user = await getUser(email: email);

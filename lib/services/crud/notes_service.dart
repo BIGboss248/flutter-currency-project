@@ -66,6 +66,7 @@ class NotesService {
   }
 
   Future<void> _cacheNotes() async {
+    log("Caching all notes");
     final allNotes = await getAllNotes();
     _notes = allNotes.toList();
     _notesStreamController.add(_notes);
@@ -78,6 +79,7 @@ class NotesService {
   
    */
   Database _getDatabaseOrThrow() {
+    log("Getting database or throw error");
     final db = _db;
     if (db == null) {
       throw DatabaseNotOpenException();
@@ -90,12 +92,14 @@ class NotesService {
   The idea is that on each databse operation the database gets opened without the need to open database before each and every operation we want to do 
   */
   Future<void> _ensureDbIsOpen() async {
+    log("ensuring db is open");
     try {
       await open();
     } on DatabaseAlreadyOpenException {}
   }
 
   Future<void> open() async {
+    log("Opening databse");
     if (_db != null) {
       throw DatabaseAlreadyOpenException();
     }
@@ -105,10 +109,10 @@ class NotesService {
       log("Database path is: $dbPath", level: 200);
       final db = await openDatabase(dbPath);
       _db = db;
-      log("Creating user table", level: 200);
+      log("Creating user table $createUserTable", level: 200);
       /* Create user table */
       await db.execute(createUserTable);
-      log("Creating notes table", level: 200);
+      log("Creating notes table $createNoteTable", level: 200);
       /* Create note table */
       await db.execute(createNoteTable);
       /* Cache notes */
@@ -119,6 +123,7 @@ class NotesService {
   }
 
   Future<void> close() async {
+    log("Closing databse");
     final db = _db;
     if (db == null) {
       throw DatabaseNotOpenException();
@@ -132,6 +137,7 @@ class NotesService {
   Create user with given Email 
   */
   Future<DatabaseUser> createUser({required String email}) async {
+    log("Creating databse user");
     _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     final results = await db.query(
@@ -153,6 +159,7 @@ class NotesService {
 
   /* Get(read) user */
   Future<DatabaseUser> getUser({required String email}) async {
+    log("Getting databse user");
     _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     final results = await db.query(
@@ -172,6 +179,7 @@ class NotesService {
    Delete user
    */
   Future<void> deleteUser({required String email}) async {
+    log("Deleting databse user $email");
     _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     final deletedCount = await db.delete(
@@ -186,6 +194,7 @@ class NotesService {
 
   /* Create note */
   Future<DatabaseNote> createNote({required DatabaseUser owner}) async {
+    log("Creating databse note for ${owner.email}");
     _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
 
@@ -198,7 +207,7 @@ class NotesService {
     const text = '';
     /* Create note in databse */
     final noteId = await db.insert(noteTable, {
-      emailColumn: owner.email,
+      textColumn: text,
       userIdColumn: owner.id,
       isSyncedWithCloudColumn: 1,
     });
@@ -218,6 +227,7 @@ class NotesService {
   }
 
   Future<void> deleteNote({required int id}) async {
+    log("Deleting databse note $id");
     _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     final deletedCount = await db.delete(
@@ -225,7 +235,7 @@ class NotesService {
       where: 'id = ?',
       whereArgs: [id],
     );
-    if (deletedCount != 0) {
+    if (deletedCount != 1) {
       throw CouldNotDeleteNote();
     } else {
       _notes.removeWhere((note) => note.id == id);
@@ -234,6 +244,7 @@ class NotesService {
   }
 
   Future<int> deleteAllNotes() async {
+    log("Deleting all databse notes");
     _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     _notes = [];
@@ -242,6 +253,7 @@ class NotesService {
   }
 
   Future<DatabaseNote> getNote({required int id}) async {
+    log("Getting databse note $id");
     _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     final notes = await db.query(
@@ -264,6 +276,7 @@ class NotesService {
   }
 
   Future<Iterable<DatabaseNote>> getAllNotes() async {
+    log("Getting all databse notes");
     _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     final notes = await db.query(noteTable);
@@ -274,6 +287,7 @@ class NotesService {
     required DatabaseNote note,
     required String text,
   }) async {
+    log("Updating databse note $note.id");
     _ensureDbIsOpen();
     /* Making sure the note exists */
     await getNote(id: note.id);

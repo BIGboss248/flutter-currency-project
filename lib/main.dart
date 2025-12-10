@@ -1,3 +1,4 @@
+import 'package:budgee/pages/new_note_page.dart';
 import 'package:flutter/material.dart';
 import 'package:budgee/constants/routes.dart';
 import 'package:budgee/constants/theme.dart';
@@ -20,7 +21,7 @@ final _router = GoRouter(
     ),
     GoRoute(
       path: transactionsPageRoute,
-      builder: (context, state) => Transactions(pageIndex: 1),
+      builder: (context, state) => Notes(pageIndex: 1),
     ),
     GoRoute(
       path: loginPageRoute,
@@ -36,6 +37,10 @@ final _router = GoRouter(
         final email = state.uri.queryParameters['email'];
         return VerifyEmailPage(pageIndex: 4, email: email);
       },
+    ),
+    GoRoute(
+      path: newNoteRoute,
+      builder: (context, state) => NewNote(pageIndex: 5),
     ),
   ],
 );

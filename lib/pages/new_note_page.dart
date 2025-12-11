@@ -99,7 +99,7 @@ class _NewNoteState extends State<NewNote> {
               return TextField(
                 controller: _textController,
                 keyboardType: TextInputType.multiline,
-                maxLines: null,
+                maxLines: null, /* Needed for multiline text */
                 decoration: const InputDecoration(
                   hintText: "Type your note here",
                 ),

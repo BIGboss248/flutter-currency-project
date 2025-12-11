@@ -36,8 +36,17 @@ const createNoteTable = '''CREATE TABLE IF NOT EXISTS "note" (
 class NotesService {
   Database? _db;
 
-  /* Make NoteService a singleton*/
-  NotesService._sharedInstance();
+  /* 
+  Make NoteService a singleton since we made it a singleton 
+  */
+  NotesService._sharedInstance(){
+    _notesStreamController = StreamController<List<DatabaseNote>>.broadcast(
+      onListen: () {
+        _notesStreamController.sink.add(_notes);
+      
+      },
+    );
+  }
   static final NotesService _shared = NotesService._sharedInstance();
   factory NotesService() => _shared;
 
@@ -47,8 +56,7 @@ class NotesService {
   /* helps UI fetch changes to notes to display on screen
   TIP we use stream controller.broadcast() since we can listen to it more than once
   */
-  final _notesStreamController =
-      StreamController<List<DatabaseNote>>.broadcast();
+  late final StreamController<List<DatabaseNote>> _notesStreamController;
 
   Stream<List<DatabaseNote>> get allNotes => _notesStreamController.stream;
 
@@ -94,10 +102,18 @@ class NotesService {
   Future<void> _ensureDbIsOpen() async {
     log("ensuring db is open");
     try {
+      log("Trying to open databse");
       await open();
-    } on DatabaseAlreadyOpenException {}
+    } on DatabaseAlreadyOpenException {
+      log("Database is already open");
+    } catch (e) {
+      log("Could not open database to ensure database is open");
+    }
   }
 
+  /* 
+    This function will get app documents directory and an sqlite file name and create a sqlite databse
+  */
   Future<void> open() async {
     log("Opening databse");
     if (_db != null) {

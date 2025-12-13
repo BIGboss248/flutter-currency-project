@@ -39,11 +39,10 @@ class NotesService {
   /* 
   Make NoteService a singleton since we made it a singleton 
   */
-  NotesService._sharedInstance(){
+  NotesService._sharedInstance() {
     _notesStreamController = StreamController<List<DatabaseNote>>.broadcast(
       onListen: () {
         _notesStreamController.sink.add(_notes);
-      
       },
     );
   }
@@ -107,7 +106,7 @@ class NotesService {
     } on DatabaseAlreadyOpenException {
       log("Database is already open");
     } catch (e) {
-      log("Could not open database to ensure database is open");
+      log("Could not open database to ensure database is open Error:\n $e");
     }
   }
 

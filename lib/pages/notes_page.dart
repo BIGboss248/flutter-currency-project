@@ -66,7 +66,25 @@ class _NotesState extends State<Notes> {
                           case ConnectionState.done:
                             return const Text("Stream is done");
                           case ConnectionState.active:
-                            return const Text("Stream is active");
+                            final allNotes =
+                                snapshot.data as List<DatabaseNote>;
+                            return Expanded(
+                              child: ListView.builder(
+                                itemBuilder: (context, index) {
+                                  final note = allNotes[index];
+                                  return ListTile(
+                                    title: Text(
+                                      note.text,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      softWrap: true,
+                                    ),
+                                  );
+                                },
+                                itemCount: allNotes.length,
+                              ),
+                            );
+                          // return const Text("Stream is active");
                           case ConnectionState.none:
                             return const Text("Stream is none");
                         }

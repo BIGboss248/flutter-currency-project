@@ -14,6 +14,7 @@ import 'dart:developer' as developer;
 
 // GoRouter configuration
 final _router = GoRouter(
+  /* TODO Implement route protection */
   routes: [
     GoRoute(
       path: mainPageRoute,

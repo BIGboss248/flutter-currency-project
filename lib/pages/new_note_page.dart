@@ -88,26 +88,34 @@ class _NewNoteState extends State<NewNote> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("New note")),
-      body: FutureBuilder(
-        future: createNewNote(),
-        builder: (context, snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.done:
-            log("snpashot data is: ${snapshot.data}");
-              _note = snapshot.data as DatabaseNote;
-              _setupTextControllerListener();
-              return TextField(
-                controller: _textController,
-                keyboardType: TextInputType.multiline,
-                maxLines: null, /* Needed for multiline text */
-                decoration: const InputDecoration(
-                  hintText: "Type your note here",
-                ),
-              );
-            default:
-              return const CircularProgressIndicator();
-          }
-        },
+      body: Container(
+        padding: const EdgeInsets.all(8),
+        margin: const EdgeInsets.all(8),
+        child: FutureBuilder(
+          future: createNewNote(),
+          builder: (context, snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.done:
+                log("snpashot data is: ${snapshot.data}");
+                _note = snapshot.data as DatabaseNote;
+                _setupTextControllerListener();
+                return TextField(
+                  controller: _textController,
+                  keyboardType: TextInputType.multiline,
+                  maxLines: null,
+                  /* Needed for multiline text */
+                  decoration: const InputDecoration(
+                    hintText: "Type your note here",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                    ),
+                  ),
+                );
+              default:
+                return const CircularProgressIndicator();
+            }
+          },
+        ),
       ),
     );
   }

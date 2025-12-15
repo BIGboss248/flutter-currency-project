@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'dart:developer' show log;
 
 class NewNote extends StatefulWidget {
-  const NewNote({required this.pageIndex, super.key});
+  const NewNote({required this.pageIndex,this.noteId ,super.key});
 
   final int pageIndex;
+  
+  final int? noteId;
 
   @override
   State<NewNote> createState() => _NewNoteState();

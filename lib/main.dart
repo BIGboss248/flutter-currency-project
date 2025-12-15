@@ -41,7 +41,13 @@ final _router = GoRouter(
     ),
     GoRoute(
       path: newNoteRoute,
-      builder: (context, state) => NewNote(pageIndex: 5),
+      builder: (context, state) {
+        final noteId = state.uri.queryParameters['noteId'];
+        if (noteId == null) {
+          return NewNote(pageIndex: 5);
+        }
+        return NewNote(pageIndex: 5, noteId: int.parse(noteId));
+      },
     ),
   ],
 );

@@ -54,6 +54,7 @@ class _NotesState extends State<Notes> {
         child: Column(
           children: [
             FutureBuilder(
+              s
               future: dbUser,
               builder: (context, snapshot) {
                 switch (snapshot.connectionState) {

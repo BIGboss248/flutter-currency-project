@@ -1,6 +1,7 @@
 import 'package:budgee/constants/routes.dart';
 import 'package:budgee/services/auth/auth_service.dart';
 import 'package:budgee/services/crud/notes_service.dart';
+import 'package:budgee/widgets/alert_dialog.dart';
 import 'package:budgee/widgets/main_bot_navbar.dart';
 import 'package:budgee/widgets/main_drawer.dart';
 import 'package:flutter/material.dart';
@@ -78,6 +79,42 @@ class _NotesState extends State<Notes> {
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       softWrap: true,
+                                    ),
+                                    trailing: IconButton(
+                                      icon: Icon(Icons.delete),
+                                      onPressed: () async {
+                                        final shouldDelete =
+                                            await showChoiceDialog(
+                                              context: context,
+                                              title: "Delete note",
+                                              content:
+                                                  "Are you sure you want to delete note",
+                                              actions: [
+                                                TextButton(
+                                                  child: Text("No"),
+                                                  onPressed: () {
+                                                    Navigator.pop(
+                                                      context,
+                                                      false,
+                                                    );
+                                                  },
+                                                ),
+                                                TextButton(
+                                                  child: Text("yes"),
+                                                  onPressed: () {
+                                                    Navigator.pop(
+                                                      context,
+                                                      true,
+                                                    );
+                                                  },
+                                                ),
+                                              ],
+                                            ) ??
+                                            false;
+                                        if (shouldDelete) {
+                                          _noteService.deleteNote(id: note.id);
+                                        }
+                                      },
                                     ),
                                   );
                                 },

@@ -311,6 +311,7 @@ class NotesService {
       textColumn: text,
       isSyncedWithCloudColumn: 0,
     });
+    log("Updated count is $updatedCount");
     if (updatedCount == 0) {
       throw CouldNotUpdateNote();
     } else {

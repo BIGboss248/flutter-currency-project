@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'dart:developer' show log;
 
 class NewNote extends StatefulWidget {
-  const NewNote({required this.pageIndex,this.noteId ,super.key});
+  const NewNote({required this.pageIndex, this.noteId, super.key});
 
   final int pageIndex;
-  
+
   final int? noteId;
 
   @override
@@ -24,6 +24,9 @@ class _NewNoteState extends State<NewNote> {
 
   /* Create a new note or if the note exsits return that */
   Future<DatabaseNote> createNewNote() async {
+    if (widget.noteId != null) {
+      _note = await _notsService.getNote(id: widget.noteId!);
+    }
     final existingNote = _note;
     if (existingNote != null) {
       log("Returning existing note");
@@ -73,6 +76,9 @@ class _NewNoteState extends State<NewNote> {
 
   @override
   initState() {
+    log(
+      "new_note_page opened with params noteID: ${widget.noteId} and pageIndex: ${widget.pageIndex}",
+    );
     _notsService = NotesService();
     _textController = TextEditingController();
     super.initState();
@@ -100,18 +106,24 @@ class _NewNoteState extends State<NewNote> {
               case ConnectionState.done:
                 log("snpashot data is: ${snapshot.data}");
                 _note = snapshot.data as DatabaseNote;
+                _textController.text = _note!.text;
                 _setupTextControllerListener();
-                return TextField(
-                  controller: _textController,
-                  keyboardType: TextInputType.multiline,
-                  maxLines: null,
-                  /* Needed for multiline text */
-                  decoration: const InputDecoration(
-                    hintText: "Type your note here",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                return Column(
+                  children: [
+                    Text("note id is: ${_note!.id}"),
+                    TextField(
+                      controller: _textController,
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
+                      /* Needed for multiline text */
+                      decoration: const InputDecoration(
+                        hintText: "Type your note here",
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 );
               default:
                 return const CircularProgressIndicator();

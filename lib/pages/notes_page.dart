@@ -32,6 +32,12 @@ class _NotesState extends State<Notes> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _noteService.deleteAllNotes();
+        },
+        child: Icon(Icons.delete),
+      ),
       appBar: AppBar(
         title: const Text("notes"),
         centerTitle: true,
@@ -75,11 +81,16 @@ class _NotesState extends State<Notes> {
                                   final note = allNotes[index];
                                   return ListTile(
                                     title: Text(
-                                      note.text,
+                                      "note id: ${note.id}, text: ${note.text}",
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       softWrap: true,
                                     ),
+                                    onTap: () {
+                                      context.push(
+                                        "$newNoteRoute?noteId=${note.id}",
+                                      );
+                                    },
                                     trailing: IconButton(
                                       icon: Icon(Icons.delete),
                                       onPressed: () async {

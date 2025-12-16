@@ -11,6 +11,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   developer.log("Initializing firebase...", level: 100);
   await AuthService.firebase().initialize();
+  /* TODO Setup theme change and light mode change */
   await loadSavedTheme(); // Load persisted theme FIRST
   runApp(const MyApp());
 }

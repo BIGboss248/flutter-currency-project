@@ -1,5 +1,6 @@
 import 'package:budgee/services/auth/auth_user.dart';
 
+/* TODO Check abstract class and how it's used in diffrent programming language */
 abstract class AuthProvider {
   Future<void> initialize();
   AuthUser? get currentUser;

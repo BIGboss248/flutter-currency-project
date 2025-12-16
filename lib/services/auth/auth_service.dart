@@ -2,6 +2,7 @@ import 'package:budgee/services/auth/auth_provider.dart';
 import 'package:budgee/services/auth/auth_user.dart';
 import 'package:budgee/services/auth/firebase_auth_provider.dart';
 
+/* TODO Check implement and how it works */
 class AuthService implements AuthProvider {
   final AuthProvider provider;
   const AuthService(this.provider);

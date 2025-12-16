@@ -25,6 +25,7 @@ class Currency {
   // Default constructor
   Currency({required this.eur, required this.gbp});
 
+  /* TODO How switch works */
   // Factory constructor to return a built instance of the class
   factory Currency.fromAPI(Map<String, dynamic> data) {
     return switch (data) {

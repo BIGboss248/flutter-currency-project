@@ -35,7 +35,7 @@ const createNoteTable = '''CREATE TABLE IF NOT EXISTS "note" (
 
 class NotesService {
   Database? _db;
-
+  DatabaseUser? _user;
   /* 
   Make NoteService a singleton since we made it a singleton 
   */
@@ -59,13 +59,22 @@ class NotesService {
 
   Stream<List<DatabaseNote>> get allNotes => _notesStreamController.stream;
 
-  Future<DatabaseUser> getOrCreateUser({required String email}) async {
+  Future<DatabaseUser> getOrCreateUser({
+    required String email,
+    bool setAsCurrentUser = true,
+  }) async {
     try {
       final user = await getUser(email: email);
+      if (setAsCurrentUser) {
+        _user = user;
+      }
       return user;
     } on CouldNotFindUserException {
-      final user = await createUser(email: email);
-      return user;
+      final createdUser = await createUser(email: email);
+      if (setAsCurrentUser) {
+        _user = createdUser;
+      }
+      return createdUser;
     } catch (e) {
       /* This will make code easier to debug since you can put a breakpoint here */
       rethrow;

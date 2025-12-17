@@ -19,7 +19,7 @@ class Notes extends StatefulWidget {
 class _NotesState extends State<Notes> {
   late final NotesService _noteService;
   final List<Widget> items = []; // MUST NOT be const
-  String get userEmail => AuthService.firebase().currentUser!.email!;
+  String get userEmail => AuthService.firebase().currentUser!.email;
   Future<DatabaseUser>? dbUser;
 
   @override

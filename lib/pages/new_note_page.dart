@@ -35,7 +35,7 @@ class _NewNoteState extends State<NewNote> {
     log("Creating new note");
     log("getting current user");
     final currentUser = AuthService.firebase().currentUser!;
-    final email = currentUser.email!;
+    final email = currentUser.email;
     log("Current user is $email");
     final owner = await _notsService.getUser(email: email);
     log("Current db user is ${owner.email}");

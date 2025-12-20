@@ -4,17 +4,17 @@ import 'package:flutter/foundation.dart';
 
 @immutable
 class CloudNote {
-  final String documentsId;
+  final String documentId;
   final String ownerUserId;
   final String text;
 
   const CloudNote({
-    required this.documentsId,
+    required this.documentId,
     required this.ownerUserId,
     required this.text,
   });
   CloudNote.fromSnapshot(QueryDocumentSnapshot<Map<String, dynamic>> snapshot)
-    : documentsId = snapshot.id,
+    : documentId = snapshot.id,
       ownerUserId = snapshot.data()[ownerUserIdFieldName],
       text = snapshot.data()[textFieldName];
 }

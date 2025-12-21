@@ -36,24 +36,11 @@ class _NotesState extends State<Notes> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _noteService.deleteAllNotes(ownerUserID: user.id);
+          context.push(newNoteRoute);
         },
-        child: Icon(Icons.delete),
+        child: Icon(Icons.add),
       ),
-      appBar: AppBar(
-        title: const Text("notes"),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            onPressed: () {
-              context.push(newNoteRoute);
-            },
-            icon: Icon(Icons.add),
-          ),
-          DrawerButton(),
-        ],
-        actionsPadding: const EdgeInsets.all(8.0),
-      ),
+      appBar: AppBar(title: const Text("notes"), centerTitle: true),
       endDrawer: MainDrawer(),
       bottomNavigationBar: MainNavBar(currentIndex: widget.pageIndex),
       body: Container(
@@ -82,7 +69,7 @@ class _NotesState extends State<Notes> {
                           final note = allNotes[index];
                           return ListTile(
                             title: Text(
-                              "note id: ${note.documentId}, text: ${note.text}",
+                              "text: ${note.text}",
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               softWrap: true,

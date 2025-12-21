@@ -2,6 +2,7 @@ import 'package:budgee/services/cloud/cloud_note.dart';
 import 'package:budgee/services/cloud/cloud_storage_exceptions.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:budgee/services/cloud/cloud_storage_constants.dart';
+import 'package:share_plus/share_plus.dart';
 
 class FirebaseCloudStorage {
   final notes = FirebaseFirestore.instance.collection('notes');
@@ -88,6 +89,20 @@ class FirebaseCloudStorage {
     } catch (_) {
       throw CouldNotDeleteNoteException();
     }
+  }
+
+  Future<ShareResult> shareNote({
+    required String documentId,
+    required String text,
+    String subject = 'Check out my note',
+  }) async {
+    if (text.isEmpty) {
+      throw CanNotShareEmptyNote();
+    }
+    return await SharePlus.instance.share(
+      ShareParams(subject: subject, text: text),
+    );
+    
   }
 
   static final FirebaseCloudStorage _shared =

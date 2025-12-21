@@ -1,6 +1,8 @@
 import 'package:budgee/services/auth/auth_service.dart';
 import 'package:budgee/services/cloud/cloud_note.dart';
+import 'package:budgee/services/cloud/cloud_storage_exceptions.dart';
 import 'package:budgee/services/cloud/firebase_cloud_storage.dart';
+import 'package:budgee/widgets/alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' show log;
 
@@ -32,7 +34,10 @@ class _NewNoteState extends State<NewNote> {
     // final owner = await _notsService.getUser(email: email);
     // log("Current db user is ${owner.email}");
     if (widget.noteId != null) {
-      _note = await _notsService.getNote(ownerUserID: currentUser.id, docID: widget.noteId.toString());
+      _note = await _notsService.getNote(
+        ownerUserID: currentUser.id,
+        docID: widget.noteId.toString(),
+      );
     }
     final existingNote = _note;
     if (existingNote != null) {
@@ -40,7 +45,9 @@ class _NewNoteState extends State<NewNote> {
       return existingNote;
     }
     log("Creating new note");
-    final result = await _notsService.createNewNote(ownerUserID: currentUser.id);
+    final result = await _notsService.createNewNote(
+      ownerUserID: currentUser.id,
+    );
     log("new note is $result");
     return result;
   }
@@ -96,6 +103,31 @@ class _NewNoteState extends State<NewNote> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          try {
+            final shareResult = await _notsService.shareNote(
+              documentId: _note!.documentId,
+              text: _textController.text,
+            );
+          } on CanNotShareEmptyNote {
+            await showChoiceDialog(
+              context: context,
+              title: "Can not share empty note",
+              content: "Can not share empty note",
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(true);
+                  },
+                  child: Text("ok"),
+                ),
+              ],
+            );
+          }
+        },
+        child: const Icon(Icons.share),
+      ),
       appBar: AppBar(title: Text("New note")),
       body: Container(
         padding: const EdgeInsets.all(8),

@@ -1,6 +1,7 @@
 import 'package:budgee/constants/routes.dart';
 import 'package:budgee/services/auth/auth_service.dart';
-import 'package:budgee/services/crud/notes_service.dart';
+import 'package:budgee/services/cloud/cloud_note.dart';
+import 'package:budgee/services/cloud/firebase_cloud_storage.dart';
 import 'package:budgee/widgets/alert_dialog.dart';
 import 'package:budgee/widgets/main_bot_navbar.dart';
 import 'package:budgee/widgets/main_drawer.dart';
@@ -17,15 +18,16 @@ class Notes extends StatefulWidget {
 }
 
 class _NotesState extends State<Notes> {
-  late final NotesService _noteService;
+  late final FirebaseCloudStorage _noteService;
   final List<Widget> items = []; // MUST NOT be const
-  String get userEmail => AuthService.firebase().currentUser!.email;
-  Future<DatabaseUser>? dbUser;
+  final user = AuthService.firebase().currentUser!;
+  String get userEmail => user.email;
+  Future<CloudNote>? dbUser;
 
   @override
   void initState() {
-    _noteService = NotesService();
-    dbUser = _noteService.getOrCreateUser(email: userEmail);
+    _noteService = FirebaseCloudStorage();
+    // dbUser = _noteService.getOrCreateUser(email: userEmail);
     super.initState();
   }
 
@@ -34,7 +36,7 @@ class _NotesState extends State<Notes> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _noteService.deleteAllNotes();
+          _noteService.deleteAllNotes(ownerUserID: user.id);
         },
         child: Icon(Icons.delete),
       ),
@@ -59,94 +61,89 @@ class _NotesState extends State<Notes> {
         padding: const EdgeInsets.all(20.0),
         child: Column(
           children: [
-            FutureBuilder(
-              future: dbUser,
+            // FutureBuilder(
+            //   future: dbUser,
+            //   builder: (context, snapshot) {
+            //     switch (snapshot.connectionState) {
+            //       case ConnectionState.done:
+            /* return */ StreamBuilder(
+              stream: _noteService.allNotes(ownerUserID: user.id),
               builder: (context, snapshot) {
                 switch (snapshot.connectionState) {
-                  case ConnectionState.done:
-                    return StreamBuilder(
-                      stream: _noteService.allNotes,
-                      builder: (context, snapshot) {
-                        switch (snapshot.connectionState) {
-                          case ConnectionState.waiting:
-                            return const Text("Waiting for all notes");
-                          case ConnectionState.done:
-                            return const Text("Stream is done");
-                          case ConnectionState.active:
-                            final allNotes =
-                                snapshot.data as List<DatabaseNote>;
-                            return Expanded(
-                              child: ListView.builder(
-                                itemBuilder: (context, index) {
-                                  final note = allNotes[index];
-                                  return ListTile(
-                                    title: Text(
-                                      "note id: ${note.id}, text: ${note.text}",
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      softWrap: true,
-                                    ),
-                                    onTap: () {
-                                      context.push(
-                                        "$newNoteRoute?noteId=${note.id}",
-                                      );
-                                    },
-                                    trailing: IconButton(
-                                      icon: Icon(Icons.delete),
-                                      onPressed: () async {
-                                        final shouldDelete =
-                                            await showChoiceDialog(
-                                              context: context,
-                                              title: "Delete note",
-                                              content:
-                                                  "Are you sure you want to delete note",
-                                              actions: [
-                                                TextButton(
-                                                  child: Text("No"),
-                                                  onPressed: () {
-                                                    Navigator.pop(
-                                                      context,
-                                                      false,
-                                                    );
-                                                  },
-                                                ),
-                                                TextButton(
-                                                  child: Text("yes"),
-                                                  onPressed: () {
-                                                    Navigator.pop(
-                                                      context,
-                                                      true,
-                                                    );
-                                                  },
-                                                ),
-                                              ],
-                                            ) ??
-                                            false;
-                                        if (shouldDelete) {
-                                          _noteService.deleteNote(id: note.id);
-                                        }
-                                      },
-                                    ),
-                                  );
-                                },
-                                itemCount: allNotes.length,
-                              ),
-                            );
-                          // return const Text("Stream is active");
-                          case ConnectionState.none:
-                            return const Text("Stream is none");
-                        }
-                      },
-                    );
                   case ConnectionState.waiting:
-                    return CircularProgressIndicator();
-                  case ConnectionState.none:
-                    return Text("Future builder is none");
+                    return const Text("Waiting for all notes");
+                  case ConnectionState.done:
+                    return const Text("Stream is done");
                   case ConnectionState.active:
-                    return Text("Future builder is active");
+                    final allNotes = snapshot.data?.toList() as List<CloudNote>;
+                    return Expanded(
+                      child: ListView.builder(
+                        itemBuilder: (context, index) {
+                          final note = allNotes[index];
+                          return ListTile(
+                            title: Text(
+                              "note id: ${note.documentId}, text: ${note.text}",
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              softWrap: true,
+                            ),
+                            onTap: () {
+                              context.push(
+                                "$newNoteRoute?noteId=${note.documentId}",
+                              );
+                            },
+                            trailing: IconButton(
+                              icon: Icon(Icons.delete),
+                              onPressed: () async {
+                                final shouldDelete =
+                                    await showChoiceDialog(
+                                      context: context,
+                                      title: "Delete note",
+                                      content:
+                                          "Are you sure you want to delete note",
+                                      actions: [
+                                        TextButton(
+                                          child: Text("No"),
+                                          onPressed: () {
+                                            Navigator.pop(context, false);
+                                          },
+                                        ),
+                                        TextButton(
+                                          child: Text("yes"),
+                                          onPressed: () {
+                                            Navigator.pop(context, true);
+                                          },
+                                        ),
+                                      ],
+                                    ) ??
+                                    false;
+                                if (shouldDelete) {
+                                  _noteService.deleteNote(
+                                    documentId: note.documentId,
+                                  );
+                                }
+                              },
+                            ),
+                          );
+                        },
+                        itemCount: allNotes.length,
+                      ),
+                    );
+                  // return const Text("Stream is active");
+                  case ConnectionState.none:
+                    return const Text("Stream is none");
                 }
               },
             ),
+            //       case ConnectionState.waiting:
+            //         return CircularProgressIndicator();
+            //       case ConnectionState.none:
+            //         return Text("Future builder is none");
+            //       case ConnectionState.active:
+            //         return Text("Future builder is active");
+            //     }
+            //   },
+            // ),
           ],
         ),
       ),

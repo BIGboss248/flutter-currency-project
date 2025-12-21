@@ -1,5 +1,6 @@
 import 'package:budgee/services/auth/auth_service.dart';
-import 'package:budgee/services/crud/notes_service.dart';
+import 'package:budgee/services/cloud/cloud_note.dart';
+import 'package:budgee/services/cloud/firebase_cloud_storage.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' show log;
 
@@ -8,7 +9,7 @@ class NewNote extends StatefulWidget {
 
   final int pageIndex;
 
-  final int? noteId;
+  final String? noteId;
 
   @override
   State<NewNote> createState() => _NewNoteState();
@@ -16,16 +17,22 @@ class NewNote extends StatefulWidget {
 
 class _NewNoteState extends State<NewNote> {
   /* Will keep track of note through this variable so it dosen't create it on each widget rebuild */
-  DatabaseNote? _note;
+  CloudNote? _note;
   /* Get the instance of the notes service */
-  late final NotesService _notsService;
+  late final FirebaseCloudStorage _notsService;
   /* Used for note text */
   late final TextEditingController _textController;
 
   /* Create a new note or if the note exsits return that */
-  Future<DatabaseNote> createNewNote() async {
+  Future<CloudNote> createNewNote() async {
+    log("getting current user");
+    final currentUser = AuthService.firebase().currentUser!;
+    final email = currentUser.email;
+    log("Current user is $email");
+    // final owner = await _notsService.getUser(email: email);
+    // log("Current db user is ${owner.email}");
     if (widget.noteId != null) {
-      _note = await _notsService.getNote(id: widget.noteId!);
+      _note = await _notsService.getNote(ownerUserID: currentUser.id, docID: widget.noteId.toString());
     }
     final existingNote = _note;
     if (existingNote != null) {
@@ -33,13 +40,7 @@ class _NewNoteState extends State<NewNote> {
       return existingNote;
     }
     log("Creating new note");
-    log("getting current user");
-    final currentUser = AuthService.firebase().currentUser!;
-    final email = currentUser.email;
-    log("Current user is $email");
-    final owner = await _notsService.getUser(email: email);
-    log("Current db user is ${owner.email}");
-    final result = await _notsService.createNote(owner: owner);
+    final result = await _notsService.createNewNote(ownerUserID: currentUser.id);
     log("new note is $result");
     return result;
   }
@@ -48,7 +49,7 @@ class _NewNoteState extends State<NewNote> {
   void _deleteNoteIfTextIsEmpty() {
     final note = _note;
     if (note != null && _textController.text.isEmpty) {
-      _notsService.deleteNote(id: note.id);
+      _notsService.deleteNote(documentId: note.documentId);
     }
   }
 
@@ -56,7 +57,7 @@ class _NewNoteState extends State<NewNote> {
     final note = _note;
     final text = _textController.text;
     if (note != null && text.isNotEmpty) {
-      _notsService.updateNote(note: note, text: text);
+      _notsService.updateNote(documentId: note.documentId, text: text);
     }
   }
 
@@ -66,7 +67,7 @@ class _NewNoteState extends State<NewNote> {
       return;
     }
     final text = _textController.text;
-    await _notsService.updateNote(note: note!, text: text);
+    await _notsService.updateNote(documentId: note!.documentId, text: text);
   }
 
   void _setupTextControllerListener() {
@@ -79,7 +80,7 @@ class _NewNoteState extends State<NewNote> {
     log(
       "new_note_page opened with params noteID: ${widget.noteId} and pageIndex: ${widget.pageIndex}",
     );
-    _notsService = NotesService();
+    _notsService = FirebaseCloudStorage();
     _textController = TextEditingController();
     super.initState();
   }
@@ -105,12 +106,12 @@ class _NewNoteState extends State<NewNote> {
             switch (snapshot.connectionState) {
               case ConnectionState.done:
                 log("snpashot data is: ${snapshot.data}");
-                _note = snapshot.data as DatabaseNote;
+                _note = snapshot.data as CloudNote;
                 _textController.text = _note!.text;
                 _setupTextControllerListener();
                 return Column(
                   children: [
-                    Text("note id is: ${_note!.id}"),
+                    Text("note id is: ${_note!.documentId}"),
                     TextField(
                       controller: _textController,
                       keyboardType: TextInputType.multiline,

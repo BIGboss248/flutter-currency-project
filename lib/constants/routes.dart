@@ -58,7 +58,7 @@ final router = GoRouter(
         if (noteId == null) {
           return NewNote(pageIndex: 5);
         }
-        return NewNote(pageIndex: 5, noteId: int.parse(noteId));
+        return NewNote(pageIndex: 5, noteId: noteId);
       },
       redirect: (context, state) {
         final isLoggedIn = AuthService.firebase().currentUser != null;

@@ -106,7 +106,7 @@ class _NewNoteState extends State<NewNote> {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           try {
-            final shareResult = await _notsService.shareNote(
+            await _notsService.shareNote(
               documentId: _note!.documentId,
               text: _textController.text,
             );

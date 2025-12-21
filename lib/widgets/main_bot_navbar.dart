@@ -20,7 +20,7 @@ class MainNavBar extends StatelessWidget {
             }
           case 1:
             {
-              context.push(transactionsPageRoute);
+              context.push(notesPageRoute);
               break;
             }
           case 2:

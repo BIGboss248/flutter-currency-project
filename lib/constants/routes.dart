@@ -8,7 +8,7 @@ import 'package:budgee/services/auth/auth_service.dart';
 import 'package:go_router/go_router.dart';
 
 const String mainPageRoute = '/';
-const String transactionsPageRoute = '/transactions';
+const String notesPageRoute = '/user-notes';
 const String loginPageRoute = '/login';
 const String registerPageRoute = '/register';
 const String verifyEmailPageRoute = '/verify-email';
@@ -16,13 +16,14 @@ const String newNoteRoute = '/new-note';
 
 // GoRouter configuration
 final router = GoRouter(
+  initialLocation: notesPageRoute,
   routes: [
     GoRoute(
       path: mainPageRoute,
       builder: (context, state) => HomePage(pageIndex: 0),
     ),
     GoRoute(
-      path: transactionsPageRoute,
+      path: notesPageRoute,
       builder: (context, state) => Notes(pageIndex: 1),
       redirect: (context, state) {
         final user = AuthService.firebase().currentUser;

@@ -10,7 +10,7 @@ dependencies:
   bloc: ^9.1.0
   cloud_firestore: ^6.1.1
   firebase_auth: ^6.1.2
-  firebase_core: ^4.2.1
+  firebase_core: ^4.3.0
   flutter:
     sdk: flutter
   go_router: ^17.0.0
@@ -19,6 +19,7 @@ dependencies:
   path: ^1.9.1
   path_provider: ^2.1.5
   rename: ^3.1.0
+  # Share plus dose not work with flutter windows
   share_plus: ^12.0.1
   shared_preferences: ^2.5.3
   sqflite: ^2.4.2

@@ -6,8 +6,9 @@ import 'package:budgee/services/auth/auth_service.dart';
 import 'package:budgee/widgets/theme_change.dart';
 
 void main() async {
-  logger.i("Initializing widgets...");
+  // logger.i("Initializing widgets...");
   WidgetsFlutterBinding.ensureInitialized();
+  await initializeLogger();
   logger.i("Initializing firebase...");
   await AuthService.firebase().initialize();
   /* TODO Setup theme change and light mode change */

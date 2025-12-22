@@ -31,7 +31,7 @@ final router = GoRouter(
 
         // Redirect to login if not authenticated
         if (!isLoggedIn) {
-          return loginPageRoute;
+          return '$loginPageRoute?fromSourcePage=${Uri.encodeComponent(state.uri.toString())}';
         }
 
         return null; // No redirection
@@ -39,7 +39,14 @@ final router = GoRouter(
     ),
     GoRoute(
       path: loginPageRoute,
-      builder: (context, state) => LoginPage(pageIndex: 2),
+      builder: (context, state) {
+        final fromSourcePage = state.uri.queryParameters['fromSourcePage'];
+        if (fromSourcePage != null) {
+          return LoginPage(pageIndex: 2, fromSourcePage: fromSourcePage);
+        }
+        
+        return LoginPage(pageIndex: 2);
+      },
     ),
     GoRoute(
       path: registerPageRoute,
@@ -66,7 +73,7 @@ final router = GoRouter(
 
         // Redirect to login if not authenticated
         if (!isLoggedIn) {
-          return loginPageRoute;
+          return '$loginPageRoute?fromSourcePage=${Uri.encodeComponent(state.uri.toString())}';
         }
 
         return null; // No redirection

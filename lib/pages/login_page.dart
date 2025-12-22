@@ -11,9 +11,11 @@ import 'dart:developer' as developer;
 import 'package:go_router/go_router.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({required this.pageIndex, super.key});
+  const LoginPage({required this.pageIndex, super.key, this.fromSourcePage});
 
   final int pageIndex;
+
+  final String? fromSourcePage;
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -239,9 +241,17 @@ class _LoginPageState extends State<LoginPage> {
                     } else {
                       developer.log(
                         "User logged in: ${AuthService.firebase().currentUser?.getEmail ?? "Unknown"}",
-
                         level: 200,
                       );
+                      // Route back to original page after successful login
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        if (widget.fromSourcePage != null &&
+                            widget.fromSourcePage!.isNotEmpty) {
+                          context.go(widget.fromSourcePage!);
+                        } else {
+                          context.go('/'); // Default route if no source page
+                        }
+                      });
                       return const Text(
                         "Login Successful!",
                         style: TextStyle(color: Colors.green),

@@ -1,8 +1,8 @@
+import 'package:budgee/utils/app_logger.dart';
 import 'package:flutter/material.dart';
 import 'package:budgee/utils/currency.dart';
 import 'package:budgee/widgets/main_drawer.dart';
 import 'package:budgee/widgets/main_bot_navbar.dart';
-import 'dart:developer' as developer;
 
 class HomePage extends StatefulWidget {
   const HomePage({required this.pageIndex, super.key});
@@ -37,7 +37,7 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () {
-          developer.log("button pressed", level: 200);
+          logger.i("button pressed");
         },
       ),
       body: SingleChildScrollView(

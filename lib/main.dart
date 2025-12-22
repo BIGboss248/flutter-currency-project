@@ -1,15 +1,14 @@
+import 'package:budgee/utils/app_logger.dart';
 import 'package:flutter/material.dart';
 import 'package:budgee/constants/routes.dart';
 import 'package:budgee/constants/theme.dart';
 import 'package:budgee/services/auth/auth_service.dart';
 import 'package:budgee/widgets/theme_change.dart';
-import 'dart:developer' as developer;
-
 
 void main() async {
-  developer.log("Initializing widgets...", level: 100);
+  logger.i("Initializing widgets...");
   WidgetsFlutterBinding.ensureInitialized();
-  developer.log("Initializing firebase...", level: 100);
+  logger.i("Initializing firebase...");
   await AuthService.firebase().initialize();
   /* TODO Setup theme change and light mode change */
   await loadSavedTheme(); // Load persisted theme FIRST

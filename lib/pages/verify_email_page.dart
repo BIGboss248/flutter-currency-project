@@ -1,6 +1,6 @@
+import 'package:budgee/utils/app_logger.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'dart:developer' as developer;
 
 class VerifyEmailPage extends StatefulWidget {
   const VerifyEmailPage({super.key, required this.pageIndex, this.email});
@@ -22,7 +22,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
 
   @override
   void initState() {
-    developer.log("Inside verification page email recived is ${widget.email}");
+    logger.i("Inside verification page email recived is ${widget.email}");
     super.initState();
     if (widget.email != null) {
       _emailController.text = widget.email!;

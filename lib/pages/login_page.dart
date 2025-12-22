@@ -1,3 +1,4 @@
+import 'package:budgee/utils/app_logger.dart';
 import 'package:budgee/widgets/alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:budgee/constants/routes.dart';
@@ -6,7 +7,6 @@ import 'package:budgee/services/auth/auth_service.dart';
 import 'package:budgee/services/auth/auth_user.dart';
 import 'package:budgee/widgets/main_bot_navbar.dart';
 import 'package:budgee/widgets/main_drawer.dart';
-import 'dart:developer' as developer;
 
 import 'package:go_router/go_router.dart';
 
@@ -156,20 +156,17 @@ class _LoginPageState extends State<LoginPage> {
                             ) ??
                             false;
                         if (shouldLogOut == false) {
-                          developer.log("Logout cancelled by user", level: 200);
+                          logger.i("Logout cancelled by user");
                           return;
                         } else {
                           setState(() {
                             signOutFuture = AuthService.firebase().logOut();
                           });
-                          developer.log("Logging user out", level: 200);
+                          logger.i("Logging user out");
                           return;
                         }
                       } else {
-                        developer.log(
-                          "No user is currently logged in",
-                          level: 800,
-                        );
+                        logger.e("No user is currently logged in");
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text(
@@ -206,31 +203,24 @@ class _LoginPageState extends State<LoginPage> {
                       switch (snapshot.error) {
                         case WrongPasswordAuthExecption():
                           {
-                            developer.log(
+                            logger.w(
                               "Wrong password entered for user ${_emailController.text}",
-                              level: 600,
                             );
                             message = "Wrong user name or password";
                           }
                         case UserNotFoundAuthExecption():
                           {
-                            developer.log("User not found", level: 600);
+                            logger.w("User not found");
                             message = "This user is not registered";
                           }
                         case InvalidEmailAuthExecption():
                           {
-                            developer.log(
-                              "Firebase Email is not valid",
-                              level: 600,
-                            );
+                            logger.w("Firebase Email is not valid");
                             message = "The email provided is not valid";
                           }
                         case GenericAuthExecption():
                           {
-                            developer.log(
-                              "generic error logging in user",
-                              level: 600,
-                            );
+                            logger.w("generic error logging in user");
                             message = "Unknown login error occured";
                           }
                       }
@@ -239,9 +229,8 @@ class _LoginPageState extends State<LoginPage> {
                         style: const TextStyle(color: Colors.red),
                       );
                     } else {
-                      developer.log(
+                      logger.i(
                         "User logged in: ${AuthService.firebase().currentUser?.getEmail ?? "Unknown"}",
-                        level: 200,
                       );
                       // Route back to original page after successful login
                       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -268,17 +257,14 @@ class _LoginPageState extends State<LoginPage> {
                     return CircularProgressIndicator();
                   case ConnectionState.done:
                     if (snapshot.hasError) {
-                      developer.log(
-                        "Error logging out user ${snapshot.error}",
-                        level: 600,
-                      );
+                      logger.w("Error logging out user ${snapshot.error}");
                       return Text(
                         "Error logging you out",
                         style: TextStyle(color: Colors.red),
                         textAlign: TextAlign.center,
                       );
                     }
-                    developer.log("User logged out", level: 200);
+                    logger.i("User logged out");
                     return Text(
                       "Logged out successfully",
                       style: TextStyle(color: Colors.green),

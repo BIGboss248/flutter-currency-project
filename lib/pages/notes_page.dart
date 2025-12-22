@@ -2,6 +2,7 @@ import 'package:budgee/constants/routes.dart';
 import 'package:budgee/services/auth/auth_service.dart';
 import 'package:budgee/services/cloud/cloud_note.dart';
 import 'package:budgee/services/cloud/firebase_cloud_storage.dart';
+import 'package:budgee/utils/app_logger.dart';
 import 'package:budgee/widgets/alert_dialog.dart';
 import 'package:budgee/widgets/main_bot_navbar.dart';
 import 'package:budgee/widgets/main_drawer.dart';
@@ -62,7 +63,28 @@ class _NotesState extends State<Notes> {
                   case ConnectionState.done:
                     return const Text("Stream is done");
                   case ConnectionState.active:
-                    final allNotes = snapshot.data?.toList() as List<CloudNote>;
+                    // Defensively handle cases where the stream yields null or empty data
+                    if (!snapshot.hasData || snapshot.data == null) {
+                      logger.w(
+                        "No data received from notes stream maybe user logged out?",
+                      );
+                      return const Expanded(
+                        child: Center(child: Text("No notes available")),
+                      );
+                    }
+
+                    final rawData = snapshot.data;
+                    final allNotes = (rawData is Iterable)
+                        ? rawData!.cast<CloudNote>().toList()
+                        : <CloudNote>[];
+
+                    if (allNotes.isEmpty) {
+                      logger.w("No notes found for user ${user.id}");
+                      return const Expanded(
+                        child: Center(child: Text("No notes yet")),
+                      );
+                    }
+
                     return Expanded(
                       child: ListView.builder(
                         itemBuilder: (context, index) {
@@ -80,7 +102,7 @@ class _NotesState extends State<Notes> {
                               );
                             },
                             trailing: IconButton(
-                              icon: Icon(Icons.delete),
+                              icon: const Icon(Icons.delete),
                               onPressed: () async {
                                 final shouldDelete =
                                     await showChoiceDialog(
@@ -90,13 +112,13 @@ class _NotesState extends State<Notes> {
                                           "Are you sure you want to delete note",
                                       actions: [
                                         TextButton(
-                                          child: Text("No"),
+                                          child: const Text("No"),
                                           onPressed: () {
                                             Navigator.pop(context, false);
                                           },
                                         ),
                                         TextButton(
-                                          child: Text("yes"),
+                                          child: const Text("yes"),
                                           onPressed: () {
                                             Navigator.pop(context, true);
                                           },

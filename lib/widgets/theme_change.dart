@@ -1,7 +1,7 @@
+import 'package:budgee/utils/app_logger.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:ui';
-import 'dart:developer' as developer;
 
 /*
 
@@ -31,15 +31,15 @@ Future<void> loadSavedTheme() async {
     switch (stored) {
       case "light":
         themeNotifier.value = ThemeMode.light;
-        developer.log("Loaded saved theme: light", level: 100);
+        logger.i("Loaded saved theme: light");
         break;
       case "dark":
         themeNotifier.value = ThemeMode.dark;
-        developer.log("Loaded saved theme: dark", level: 100);
+        logger.i("Loaded saved theme: dark");
         break;
       case "system":
         themeNotifier.value = ThemeMode.system;
-        developer.log("Loaded saved theme: system", level: 100);
+        logger.i("Loaded saved theme: system");
         break;
     }
   }
@@ -54,7 +54,7 @@ Future<void> loadSavedTheme() async {
 Future<void> saveTheme(ThemeMode mode) async {
   final prefs = await SharedPreferences.getInstance();
   await prefs.setString(_themeKey, mode.name); // "light", "dark", "system"
-  developer.log("Saved theme mode as ${mode.name}", level: 100);
+  logger.i("Saved theme mode as ${mode.name}");
 }
 
 class ThemeChangeIcon extends StatelessWidget {

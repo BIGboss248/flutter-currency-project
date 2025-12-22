@@ -2,9 +2,9 @@ import 'package:budgee/services/auth/auth_service.dart';
 import 'package:budgee/services/cloud/cloud_note.dart';
 import 'package:budgee/services/cloud/cloud_storage_exceptions.dart';
 import 'package:budgee/services/cloud/firebase_cloud_storage.dart';
+import 'package:budgee/utils/app_logger.dart';
 import 'package:budgee/widgets/alert_dialog.dart';
 import 'package:flutter/material.dart';
-import 'dart:developer' show log;
 
 class NewNote extends StatefulWidget {
   const NewNote({required this.pageIndex, this.noteId, super.key});
@@ -27,10 +27,10 @@ class _NewNoteState extends State<NewNote> {
 
   /* Create a new note or if the note exsits return that */
   Future<CloudNote> createNewNote() async {
-    log("getting current user");
+    logger.i("getting current user");
     final currentUser = AuthService.firebase().currentUser!;
     final email = currentUser.email;
-    log("Current user is $email");
+    logger.i("Current user is $email");
     // final owner = await _notsService.getUser(email: email);
     // log("Current db user is ${owner.email}");
     if (widget.noteId != null) {
@@ -41,14 +41,14 @@ class _NewNoteState extends State<NewNote> {
     }
     final existingNote = _note;
     if (existingNote != null) {
-      log("Returning existing note");
+      logger.i("Returning existing note");
       return existingNote;
     }
-    log("Creating new note");
+    logger.i("Creating new note");
     final result = await _notsService.createNewNote(
       ownerUserID: currentUser.id,
     );
-    log("new note is $result");
+    logger.i("new note is $result");
     return result;
   }
 
@@ -84,7 +84,7 @@ class _NewNoteState extends State<NewNote> {
 
   @override
   initState() {
-    log(
+    logger.i(
       "new_note_page opened with params noteID: ${widget.noteId} and pageIndex: ${widget.pageIndex}",
     );
     _notsService = FirebaseCloudStorage();
@@ -137,7 +137,7 @@ class _NewNoteState extends State<NewNote> {
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.done:
-                log("snpashot data is: ${snapshot.data}");
+                logger.i("snpashot data is: ${snapshot.data}");
                 _note = snapshot.data as CloudNote;
                 _textController.text = _note!.text;
                 _setupTextControllerListener();

@@ -1,9 +1,9 @@
+import 'package:budgee/utils/app_logger.dart';
 import 'package:flutter/material.dart';
 import 'package:budgee/constants/routes.dart';
 import 'package:budgee/services/auth/auth_execptions.dart';
 import 'package:budgee/services/auth/auth_service.dart';
 import 'package:budgee/widgets/main_drawer.dart';
-import 'dart:developer' as developer;
 
 import 'package:go_router/go_router.dart';
 
@@ -124,7 +124,7 @@ class _RegisterationPageState extends State<RegisterationPage> {
                   case ConnectionState.done:
                     String message;
                     if (snapshot.hasError) {
-                      developer.log(snapshot.error.toString());
+                      logger.i(snapshot.error.toString());
                       switch (snapshot.error) {
                         case EmailAlreadyInUseAuthExecption():
                           {
@@ -153,9 +153,8 @@ class _RegisterationPageState extends State<RegisterationPage> {
                       }
                       return Text(message, style: TextStyle(color: Colors.red));
                     }
-                    developer.log(
+                    logger.i(
                       "User registered: ${_emailController.text}",
-                      level: 200,
                     );
                     // developer.log(
                     //   "Sending user ${_emailController.text} to verification page",

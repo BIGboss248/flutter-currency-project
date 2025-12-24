@@ -1,4 +1,3 @@
-
 import 'package:budgee/services/auth/auth_provider.dart';
 import 'package:budgee/services/auth/bloc/auth_event.dart';
 import 'package:budgee/services/auth/bloc/auth_state.dart';
@@ -11,27 +10,23 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthEventInitialize>((event, emit) async {
       await provider.initialize();
       final user = provider.currentUser;
-      if (user == null){
+      if (user == null) {
         emit(const AuthStateLoggedOut());
-      }
-      else if (!user.isEmailVerified){
+      } else if (!user.isEmailVerified) {
         emit(const AuthStateNeedsVerification());
-      }
-      else {
+      } else {
         emit(AuthStateLoggedIn(user));
       }
-      
     });
     // Login
     on<AuthEventLogin>((event, emit) async {
       emit(AuthStateLoading());
       final email = event.email;
       final password = event.password;
-      try{
+      try {
         final user = await provider.logIn(email: email, password: password);
         emit(AuthStateLoggedIn(user));
-
-      } on Exception catch (e){
+      } on Exception catch (e) {
         emit(AuthStateLoginFalilure(e));
       }
     });
@@ -46,22 +41,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     });
     // Register
+    //TODO handle registration exceptions
     on<AuthEventRegister>((event, emit) async {
       final email = event.email;
       final password = event.password;
-      try{
-      final user = await provider.createUser(email: email, password: password);
-      if (!user.isEmailVerified){
-        emit(const AuthStateNeedsVerification());
+      try {
+        await provider.createUser(email: email, password: password);
+        emit(AuthStateRegisterationSuccess());
+      } on Exception catch (e) {
+        logger.e("Registration failed for email $email: $e");
+        emit(AuthStateRegisterationFailure(e));
       }
-      else {
-        emit(AuthStateLoggedIn(user));
-      }
-    } catch (e){
-      logger.e("Registration failed for email $email: $e");
-    }
     });
   }
 }
-
-

@@ -1,4 +1,5 @@
 import 'package:budgee/services/auth/bloc/auth_bloc.dart';
+import 'package:budgee/services/auth/bloc/auth_event.dart';
 import 'package:budgee/services/auth/firebase_auth_provider.dart';
 import 'package:budgee/utils/app_logger.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +30,7 @@ class MyApp extends StatelessWidget {
       child: ValueListenableBuilder(
         valueListenable: themeNotifier,
         builder: (context, themeMode, child) {
+          context.read<AuthBloc>().add(AuthEventInitialize());
           return MaterialApp.router(
             title: "Budgee",
             debugShowCheckedModeBanner: false,

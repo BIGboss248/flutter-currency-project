@@ -1,9 +1,11 @@
-import 'package:budgee/utils/app_logger.dart';
+import 'package:budgee/services/auth/auth_execptions.dart';
+import 'package:budgee/services/auth/bloc/auth_bloc.dart';
+import 'package:budgee/services/auth/bloc/auth_event.dart';
+import 'package:budgee/services/auth/bloc/auth_state.dart';
 import 'package:flutter/material.dart';
 import 'package:budgee/constants/routes.dart';
-import 'package:budgee/services/auth/auth_execptions.dart';
-import 'package:budgee/services/auth/auth_service.dart';
 import 'package:budgee/widgets/main_drawer.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:go_router/go_router.dart';
 
@@ -22,7 +24,6 @@ class _RegisterationPageState extends State<RegisterationPage> {
   final registerFocusNode = FocusNode();
   final emailFocusNode = FocusNode();
   final passwordFocusNode = FocusNode();
-  Future<void>? userVerifiEmailFuture;
 
   @override
   void dispose() {
@@ -97,12 +98,12 @@ class _RegisterationPageState extends State<RegisterationPage> {
                   );
                   return;
                 }
-                setState(() {
-                  userVerifiEmailFuture = AuthService.firebase().createUser(
+                context.read<AuthBloc>().add(
+                  AuthEventRegister(
                     email: _emailController.text,
                     password: _passwordController.text,
-                  );
-                });
+                  ),
+                );
               },
               child: Text("Register"),
             ),
@@ -112,68 +113,51 @@ class _RegisterationPageState extends State<RegisterationPage> {
               },
               child: Text("Email verification"),
             ),
-            FutureBuilder(
-              future: userVerifiEmailFuture,
-              builder: (context, snapshot) {
-                switch (snapshot.connectionState) {
-                  case ConnectionState.none:
-                    return SizedBox.shrink();
-                  case ConnectionState.active:
-                  case ConnectionState.waiting:
-                    return CircularProgressIndicator();
-                  case ConnectionState.done:
-                    String message;
-                    if (snapshot.hasError) {
-                      logger.i(snapshot.error.toString());
-                      switch (snapshot.error) {
-                        case EmailAlreadyInUseAuthExecption():
-                          {
-                            message = "Email already in use";
-                          }
-                        case InvalidEmailAuthExecption():
-                          {
-                            message = "Invalid Email";
-                          }
-                        case WrongPasswordAuthExecption():
-                          {
-                            message = "Wrong username or password";
-                          }
-                        case WeakPasswordAuthExecption():
-                          {
-                            message = "Password is too weak";
-                          }
-                        case GenericAuthExecption():
-                          {
-                            message = "Unknown error occured";
-                          }
-                        default:
-                          {
-                            message = "Error occured";
-                          }
-                      }
-                      return Text(message, style: TextStyle(color: Colors.red));
-                    }
-                    logger.i(
-                      "User registered: ${_emailController.text}",
-                    );
-                    // developer.log(
-                    //   "Sending user ${_emailController.text} to verification page",
-                    //   level: 200,
-                    // );
-                    // developer.log(
-                    //   "Routing to $verifyEmailPageRoute?email=${_emailController.text}",
-                    //   level: 200,
-                    // );
-                    AuthService.firebase().sendEmailVerification();
-                    // context.push(
-                    //   "$verifyEmailPageRoute?email=${_emailController.text}",
-                    // );
+            BlocBuilder<AuthBloc, AuthState>(
+              builder: (context, state) {
+                if (state is AuthStateRegisterationFailure) {
+                  final exception = state.exception;
+                  if (exception is WeakPasswordAuthExecption) {
                     return Text(
-                      "Verification Email sent please verify your email",
-                      style: TextStyle(color: Colors.green),
-                      textAlign: TextAlign.center,
+                      "Weak password",
+                      style: TextStyle(color: Colors.red),
                     );
+                  } else if (exception is InvalidEmailAuthExecption) {
+                    return Text(
+                      "Invalid email",
+                      style: TextStyle(color: Colors.red),
+                    );
+                  } else if (exception is EmailAlreadyInUseAuthExecption) {
+                    return Text(
+                      "Email already in use",
+                      style: TextStyle(color: Colors.red),
+                    );
+                  }
+                  return Text(
+                    "Registration failed",
+                    style: TextStyle(color: Colors.red),
+                  );
+                } else if (state is AuthStateRegisterationSuccess) {
+                  return Text(
+                    "Registration successful, please verify your email",
+                    style: TextStyle(color: Colors.green),
+                  );
+                } else if (state is AuthStateLoading) {
+                  return CircularProgressIndicator();
+                } else if (state is AuthStateLoggedIn) {
+                  return Text(
+                    "You are already logged in",
+                    style: TextStyle(color: Colors.green),
+                  );
+                } else if (state is AuthStateLoggedOut) {
+                  return Text("You are not logged in");
+                } else if (state is AuthStateNeedsVerification) {
+                  return Text(
+                    "You are registered but you need to verify your email",
+                    style: TextStyle(color: Colors.orange),
+                  );
                 }
+                return Text("Well registeration didn't fail or succeed");
               },
             ),
           ],

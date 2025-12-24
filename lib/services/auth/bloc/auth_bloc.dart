@@ -2,6 +2,7 @@
 import 'package:budgee/services/auth/auth_provider.dart';
 import 'package:budgee/services/auth/bloc/auth_event.dart';
 import 'package:budgee/services/auth/bloc/auth_state.dart';
+import 'package:budgee/utils/app_logger.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
@@ -43,6 +44,22 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       } on Exception {
         emit(AuthStateLogOutFailure());
       }
+    });
+    // Register
+    on<AuthEventRegister>((event, emit) async {
+      final email = event.email;
+      final password = event.password;
+      try{
+      final user = await provider.createUser(email: email, password: password);
+      if (!user.isEmailVerified){
+        emit(const AuthStateNeedsVerification());
+      }
+      else {
+        emit(AuthStateLoggedIn(user));
+      }
+    } catch (e){
+      logger.e("Registration failed for email $email: $e");
+    }
     });
   }
 }

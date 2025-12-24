@@ -31,3 +31,12 @@ class AuthStateLoggedOut extends AuthState {
 class AuthStateLogOutFailure extends AuthState {
   const AuthStateLogOutFailure();
 }
+
+class AuthStateRegisterationSuccess extends AuthState {
+  const AuthStateRegisterationSuccess();
+}
+
+class AuthStateRegisterationFailure extends AuthState {
+  final Exception exception;
+  const AuthStateRegisterationFailure(this.exception);
+}

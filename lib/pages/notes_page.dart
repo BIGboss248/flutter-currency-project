@@ -1,5 +1,7 @@
 import 'package:budgee/constants/routes.dart';
 import 'package:budgee/services/auth/auth_service.dart';
+import 'package:budgee/services/auth/bloc/auth_bloc.dart';
+import 'package:budgee/services/auth/bloc/auth_event.dart';
 import 'package:budgee/services/cloud/cloud_note.dart';
 import 'package:budgee/services/cloud/firebase_cloud_storage.dart';
 import 'package:budgee/utils/app_logger.dart';
@@ -7,6 +9,7 @@ import 'package:budgee/widgets/alert_dialog.dart';
 import 'package:budgee/widgets/main_bot_navbar.dart';
 import 'package:budgee/widgets/main_drawer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class Notes extends StatefulWidget {
@@ -34,6 +37,8 @@ class _NotesState extends State<Notes> {
 
   @override
   Widget build(BuildContext context) {
+    context.read<AuthBloc>().add(AuthEventInitialize());
+    logger.i("AuthBloc sate is ${context.read<AuthBloc>().state}");
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {

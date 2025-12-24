@@ -1,12 +1,14 @@
+import 'package:budgee/services/auth/bloc/auth_bloc.dart';
+import 'package:budgee/services/auth/bloc/auth_event.dart';
+import 'package:budgee/services/auth/bloc/auth_state.dart';
 import 'package:budgee/utils/app_logger.dart';
 import 'package:budgee/widgets/alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:budgee/constants/routes.dart';
-import 'package:budgee/services/auth/auth_execptions.dart';
 import 'package:budgee/services/auth/auth_service.dart';
-import 'package:budgee/services/auth/auth_user.dart';
 import 'package:budgee/widgets/main_bot_navbar.dart';
 import 'package:budgee/widgets/main_drawer.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:go_router/go_router.dart';
 
@@ -24,9 +26,6 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   late final TextEditingController _emailController;
   late final TextEditingController _passwordController;
-
-  Future<AuthUser>? signInFuture; // Initialize signInFuture to null
-  Future<dynamic>? signOutFuture;
 
   final emailFocusNode = FocusNode();
   final passwordFocusNode = FocusNode();
@@ -121,13 +120,12 @@ class _LoginPageState extends State<LoginPage> {
                         );
                         return;
                       }
-
-                      setState(() {
-                        signInFuture = AuthService.firebase().logIn(
+                      context.read<AuthBloc>().add(
+                        AuthEventLogin(
                           email: _emailController.text,
                           password: _passwordController.text,
-                        );
-                      });
+                        ),
+                      );
                     },
                     child: Text("Login"),
                   ),
@@ -159,10 +157,7 @@ class _LoginPageState extends State<LoginPage> {
                           logger.i("Logout cancelled by user");
                           return;
                         } else {
-                          setState(() {
-                            signOutFuture = AuthService.firebase().logOut();
-                          });
-                          logger.i("Logging user out");
+                          context.read<AuthBloc>().add(AuthEventLogout());
                           return;
                         }
                       } else {
@@ -188,90 +183,31 @@ class _LoginPageState extends State<LoginPage> {
               },
               child: Text("Not a user? Register here!!"),
             ),
-            FutureBuilder(
-              future: signInFuture,
-              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                switch (snapshot.connectionState) {
-                  case ConnectionState.none:
-                    return SizedBox.shrink();
-                  case ConnectionState.waiting:
-                    return const CircularProgressIndicator();
-                  case ConnectionState.active:
-                  case ConnectionState.done:
-                    if (snapshot.hasError) {
-                      String message = "Unknown error occured";
-                      switch (snapshot.error) {
-                        case WrongPasswordAuthExecption():
-                          {
-                            logger.w(
-                              "Wrong password entered for user ${_emailController.text}",
-                            );
-                            message = "Wrong user name or password";
-                          }
-                        case UserNotFoundAuthExecption():
-                          {
-                            logger.w("User not found");
-                            message = "This user is not registered";
-                          }
-                        case InvalidEmailAuthExecption():
-                          {
-                            logger.w("Firebase Email is not valid");
-                            message = "The email provided is not valid";
-                          }
-                        case GenericAuthExecption():
-                          {
-                            logger.w("generic error logging in user");
-                            message = "Unknown login error occured";
-                          }
-                      }
-                      return Text(
-                        message,
-                        style: const TextStyle(color: Colors.red),
-                      );
-                    } else {
-                      logger.i(
-                        "User logged in: ${AuthService.firebase().currentUser?.getEmail ?? "Unknown"}",
-                      );
-                      // Route back to original page after successful login
-                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                        if (widget.fromSourcePage != null &&
-                            widget.fromSourcePage!.isNotEmpty) {
-                          context.go(widget.fromSourcePage!);
-                        } else {
-                          context.go('/'); // Default route if no source page
-                        }
-                      });
-                      return const Text(
-                        "Login Successful!",
-                        style: TextStyle(color: Colors.green),
-                      );
+            BlocBuilder<AuthBloc, AuthState>(
+              builder: (context, state) {
+                if (state is AuthStateLoggedOut) {
+                  return Text(
+                    "You are logged out",
+                    style: TextStyle(color: Colors.red),
+                  );
+                } else if (state is AuthStateLoggedIn) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    if (widget.fromSourcePage != null &&
+                        widget.fromSourcePage!.isNotEmpty) {
+                      context.go(widget.fromSourcePage!);
                     }
+                  });
+                  return Text(
+                    "Login Successful!",
+                    style: TextStyle(color: Colors.green),
+                  );
+                } else if (state is AuthStateNeedsVerification) {
+                  return Text(
+                    "Please verify your email address to continue",
+                    style: TextStyle(color: Colors.orange),
+                  );
                 }
-              },
-            ),
-            FutureBuilder(
-              future: signOutFuture,
-              builder: (context, snapshot) {
-                switch (snapshot.connectionState) {
-                  case ConnectionState.waiting:
-                    return CircularProgressIndicator();
-                  case ConnectionState.done:
-                    if (snapshot.hasError) {
-                      logger.w("Error logging out user ${snapshot.error}");
-                      return Text(
-                        "Error logging you out",
-                        style: TextStyle(color: Colors.red),
-                        textAlign: TextAlign.center,
-                      );
-                    }
-                    logger.i("User logged out");
-                    return Text(
-                      "Logged out successfully",
-                      style: TextStyle(color: Colors.green),
-                    );
-                  default:
-                    return SizedBox.shrink();
-                }
+                return Text("IDK");
               },
             ),
           ],

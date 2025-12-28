@@ -36,7 +36,12 @@ Future<void> initializeLogger(PrettyPrinter? printer) async {
       await logsDir.create(recursive: true);
     }
 
-    final logFile = File('${logsDir.path}/app_logger.txt');
+    final logFile = File('${logsDir.path}/logs.txt');
+      developer.log(
+        "Logs are stored at ${logsDir.path}/logs.txt",
+        name: "logger",
+        level: 800,
+      );
     logger = AppLogger(logFile: logFile, printer: printer);
   } catch (e) {
     developer.log(
@@ -90,9 +95,6 @@ class AppLogger {
     int logLevel = infoLevel,
   }) {
     logTime = DateTime.now();
-    if (fileLogger != null) {
-      fileLogger!.i(message);
-    }
     if (logName == null) {
       developer.log(
         message,
@@ -108,6 +110,9 @@ class AppLogger {
         name: logName,
         sequenceNumber: ++sequenceNumber,
       );
+      if (fileLogger != null) {
+        fileLogger!.i(message);
+      }
     }
   }
 
@@ -118,9 +123,6 @@ class AppLogger {
     int logLevel = debugLevel,
   }) {
     logTime = DateTime.now();
-    if (fileLogger != null) {
-      fileLogger!.d(message);
-    }
     if (logName == null) {
       developer.log(
         message,
@@ -136,6 +138,9 @@ class AppLogger {
         name: logName,
         sequenceNumber: ++sequenceNumber,
       );
+      if (fileLogger != null) {
+        fileLogger!.d(message);
+      }
     }
   }
 
@@ -146,9 +151,6 @@ class AppLogger {
     int logLevel = warningLevel,
   }) {
     logTime = DateTime.now();
-    if (fileLogger != null) {
-      fileLogger!.w(message);
-    }
     if (logName == null) {
       developer.log(
         message,
@@ -164,6 +166,9 @@ class AppLogger {
         name: logName,
         sequenceNumber: ++sequenceNumber,
       );
+      if (fileLogger != null) {
+        fileLogger!.w(message);
+      }
     }
   }
 
@@ -174,9 +179,6 @@ class AppLogger {
     int logLevel = errorLevel,
   }) {
     logTime = DateTime.now();
-    if (fileLogger != null) {
-      fileLogger!.e(message);
-    }
     if (logName == null) {
       developer.log(
         message,
@@ -192,6 +194,9 @@ class AppLogger {
         name: logName,
         sequenceNumber: ++sequenceNumber,
       );
+      if (fileLogger != null) {
+        fileLogger!.e(message);
+      }
     }
   }
 
@@ -202,9 +207,6 @@ class AppLogger {
     int logLevel = fatalLevel,
   }) {
     logTime = DateTime.now();
-    if (fileLogger != null) {
-      fileLogger!.f(message);
-    }
     if (logName == null) {
       developer.log(
         message,
@@ -220,6 +222,9 @@ class AppLogger {
         name: logName,
         sequenceNumber: ++sequenceNumber,
       );
+      if (fileLogger != null) {
+        fileLogger!.f(message);
+      }
     }
   }
 }

@@ -12,7 +12,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 void main() async {
   // logger.i("Initializing widgets...");
   WidgetsFlutterBinding.ensureInitialized();
-  await initializeLogger();
+  await initializeLogger(null);
   logger.i("Initializing firebase...");
   await AuthService.firebase().initialize();
   /* TODO Setup theme change and light mode change */

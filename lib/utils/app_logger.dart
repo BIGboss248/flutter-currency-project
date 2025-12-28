@@ -3,6 +3,17 @@ import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 
 late Logger logger;
+final printer = PrettyPrinter(
+  colors: true,
+  noBoxingByDefault: false,
+  printEmojis: true,
+  levelColors: {
+    Level.debug: AnsiColor.fg(33),
+    Level.info: AnsiColor.fg(32),
+    Level.warning: AnsiColor.fg(93),
+    Level.fatal: AnsiColor.fg(31),
+  },
+);
 
 /// Initialize the logger with file and console output.
 ///! Call this in main() before using the logger.
@@ -22,17 +33,7 @@ Future<void> initializeLogger() async {
 
     // Create logger with both console and file output
     logger = Logger(
-      printer: PrettyPrinter(
-        colors: true,
-        noBoxingByDefault: true,
-        printEmojis: true,
-        levelColors: {
-          Level.debug: AnsiColor.fg(33),
-          Level.info: AnsiColor.fg(32),
-          Level.warning: AnsiColor.fg(93),
-          Level.fatal: AnsiColor.fg(31),
-        },
-      ),
+      printer: printer,
       output: MultiOutput([ConsoleOutput(), FileOutput(file: logFile)]),
     );
 
@@ -41,19 +42,6 @@ Future<void> initializeLogger() async {
     print('Failed to initialize logger: $e');
     print(st);
     // Fallback to console-only logger
-    logger = Logger(
-      printer: PrettyPrinter(
-        colors: true,
-        noBoxingByDefault: true,
-        printEmojis: true,
-        levelColors: {
-          Level.debug: AnsiColor.fg(33),
-          Level.info: AnsiColor.fg(32),
-          Level.warning: AnsiColor.fg(93),
-          Level.fatal: AnsiColor.fg(31),
-        },
-      ),
-      output: MultiOutput([ConsoleOutput()]),
-    );
+    logger = Logger(printer: printer, output: MultiOutput([ConsoleOutput()]));
   }
 }

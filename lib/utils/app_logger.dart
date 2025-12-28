@@ -8,10 +8,13 @@ final printer = PrettyPrinter(
   noBoxingByDefault: false,
   printEmojis: true,
   levelColors: {
-    Level.debug: AnsiColor.fg(33),
-    Level.info: AnsiColor.fg(32),
-    Level.warning: AnsiColor.fg(93),
-    Level.fatal: AnsiColor.fg(31),
+    /* 
+    For some reason Ansi color won't show as their colors in terminal so had to change
+    */
+    Level.debug: AnsiColor.fg(33), //Blue
+    Level.info: AnsiColor.fg(34), //Green
+    Level.warning: AnsiColor.fg(166), //Yellow
+    Level.error: AnsiColor.fg(160), //Red
   },
 );
 

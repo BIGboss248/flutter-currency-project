@@ -1,7 +1,6 @@
 
 /* 
 Implement filter note to stream 
-TODO Check extension and stream.where function
 */
 
 extension Filter<T> on Stream<List<T>> {

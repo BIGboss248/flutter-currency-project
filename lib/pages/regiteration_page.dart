@@ -151,7 +151,7 @@ class _RegisterationPageState extends State<RegisterationPage> {
                   );
                 } else if (state is AuthStateLoggedOut) {
                   return Text("You are not logged in");
-                } else if (state is AuthStateNeedsVerification) {
+                } else if (state == AuthStateLogOutFailure(emailVerification: true)) {
                   return Text(
                     "You are registered but you need to verify your email",
                     style: TextStyle(color: Colors.orange),

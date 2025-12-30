@@ -201,7 +201,8 @@ class _LoginPageState extends State<LoginPage> {
                     "Login Successful!",
                     style: TextStyle(color: Colors.green),
                   );
-                } else if (state is AuthStateNeedsVerification) {
+                } else if (state ==
+                    AuthStateLogOutFailure(emailVerification: true)) {
                   return Text(
                     "Please verify your email address to continue",
                     style: TextStyle(color: Colors.orange),

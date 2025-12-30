@@ -1,5 +1,6 @@
 import 'package:budgee/services/auth/auth_user.dart';
 import 'package:flutter/foundation.dart' show immutable;
+import 'package:equatable/equatable.dart';
 
 @immutable
 abstract class AuthState {
@@ -15,21 +16,18 @@ class AuthStateLoggedIn extends AuthState {
   const AuthStateLoggedIn(this.user);
 }
 
-class AuthStateLoginFalilure extends AuthState {
-  final Exception exception;
-  const AuthStateLoginFalilure(this.exception);
-}
-
-class AuthStateNeedsVerification extends AuthState {
-  const AuthStateNeedsVerification();
-}
-
 class AuthStateLoggedOut extends AuthState {
   const AuthStateLoggedOut();
 }
 
-class AuthStateLogOutFailure extends AuthState {
-  const AuthStateLogOutFailure();
+class AuthStateLogOutFailure extends AuthState with EquatableMixin {
+  final Exception? exception;
+  final bool? emailVerification;
+
+  const AuthStateLogOutFailure({this.exception, this.emailVerification});
+
+  @override
+  List<Object?> get props => [exception, emailVerification];
 }
 
 class AuthStateRegisterationSuccess extends AuthState {
